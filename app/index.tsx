@@ -1,15 +1,12 @@
-import { Text, View } from "react-native";
+// index.tsx or App.tsx (root file)
+import React from 'react';
+import { NavigationContainer, NavigationIndependentTree } from '@react-navigation/native';
+import AuthNavigator from './navigation/AuthNavigator'; // Import your main navigator
 
-export default function Index() {
+export default function App() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text className="font-bold">Welcome to Byte Eats</Text>
-    </View>
+    <NavigationIndependentTree>
+      <AuthNavigator />
+    </NavigationIndependentTree>
   );
 }
