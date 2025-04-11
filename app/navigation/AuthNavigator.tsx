@@ -1,24 +1,19 @@
-// AuthNavigator.tsx or AppNavigator.tsx
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from '../screens/LoginScreen'; // Import your Login Screen
-import SignUpScreen from '../screens/SignupScreen'; // Import your SignUp Screen
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from '../screens/LoginScreen';
+import SignUpScreen from '../screens/SignupScreen';
+import MainNavigator from './MainNavigator';
+import DietPlanScreen from '../screens/DietPlanScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function AuthNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}  // This removes the header for the login screen
-      />
-      <Stack.Screen
-        name="SignUp"
-        component={SignUpScreen}
-        options={{ headerShown: false }}  // This removes the header for the sign-up screen
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="SignUp" component={SignUpScreen} />
+      <Stack.Screen name="Main" component={MainNavigator} />
+      <Stack.Screen name="DietPlan" component={DietPlanScreen} />
     </Stack.Navigator>
   );
 }

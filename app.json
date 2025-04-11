@@ -43,7 +43,8 @@
       "firebaseProjectId": "byteeats-1",
       "firebaseStorageBucket": "byteeats-1.firebasestorage.app",
       "firebaseMessagingSenderId": "673457471838",
-      "firebaseAppId": "673457471838:web:04ba91052b765025084fcf"
+      "firebaseAppId": "673457471838:web:04ba91052b765025084fcf",
+      "geminiApiKey":"AIzaSyCxSLBu31WGMVcpgw-KUHpVUOd1dQhdF_g"
     }
   }
 }
