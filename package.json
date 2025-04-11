@@ -22,6 +22,7 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/native": "^7.1.6",
     "@react-navigation/stack": "^7.2.10",
+    "@urql/core": "^5.1.1",
     "axios": "^1.8.4",
     "dotenv": "^16.4.7",
     "expo": "~52.0.43",
@@ -52,7 +53,8 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "urql": "^4.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
