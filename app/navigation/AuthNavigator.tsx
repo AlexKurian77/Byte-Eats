@@ -6,7 +6,7 @@ import { RootStackParamList } from '@/types';
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
-import DietPlan from '../screens/DietPlanScreen';
+import DietPlan from '../screens/PersonalizedDietPlanning';
 import MacroTrackerScreen from '../screens/MacroTrackerScreen';
 import MainNavigator from './MainNavigator';
 import RecipeRecommenderScreen from '../screens/RecipeRecommenderScreen';
@@ -14,7 +14,6 @@ import PricingScreen from '../screens/PricingScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ChatbotScreen from '../screens/ChatBotScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import PreferencesScreen from '../screens/PreferencesScreen';
 import MealChartScreen from '../screens/MealChartScreen';
 import GroceryListScreen from '../screens/GroceryListScreen';
 import PreferenceSlideshow from '../screens/PreferencesSlideshow';
@@ -33,7 +32,6 @@ const AuthNavigator = () => {
       <Stack.Screen name="Pricing" component={PricingScreen} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Chatbot" component={ChatbotScreen} />
-      <Stack.Screen name="Preferences" component={PreferencesScreen} />
       <Stack.Screen name="MealChart" component={MealChartScreen} />
       <Stack.Screen name="GroceryList" component={GroceryListScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen}/>
