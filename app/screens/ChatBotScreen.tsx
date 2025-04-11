@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Constants from 'expo-constants';
 import Markdown from 'react-native-markdown-display';
-
 import {
   View,
   TextInput,
@@ -13,7 +12,9 @@ import {
   Platform,
   ActivityIndicator,
   TextStyle,
+  SafeAreaView,
 } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type Message = {
   text: string;
@@ -24,7 +25,7 @@ const GEMINI_API_KEY = Constants.expoConfig?.extra?.geminiApiKey;
 
 const ChatbotScreen = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { text: 'Hey! What can I help you with today?', from: 'bot' },
+    { text: 'Hey there! 👋 I\'m ByteBot, your personal nutrition assistant. How can I help you today?', from: 'bot' },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -53,17 +54,17 @@ const ChatbotScreen = () => {
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
       const botMsg: Message = {
-        text: reply || 'Uhhh I spaced out... can you ask again?',
+        text: reply || 'I apologize, could you please rephrase your question?',
         from: 'bot',
       };
 
       setMessages(prev => [...prev, botMsg]);
     } catch (err) {
-      console.error('Gemini glitchin:', err);
+      console.error('API Error:', err);
       setMessages(prev => [
         ...prev,
         {
-          text: 'Bruh... something broke. Try again in a sec 🛠️',
+          text: 'Sorry, I encountered an error. Please try again in a moment.',
           from: 'bot',
         },
       ]);
@@ -83,96 +84,212 @@ const ChatbotScreen = () => {
   );
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <FlatList
-        data={messages}
-        renderItem={renderItem}
-        keyExtractor={(_, index) => index.toString()}
-        contentContainerStyle={styles.chat}
-      />
-
-      {loading && <ActivityIndicator size="small" color="#4caf50" style={{ marginBottom: 10 }} />}
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Ask me something..."
-          style={styles.input}
-          value={input}
-          onChangeText={setInput}
-        />
-        <TouchableOpacity onPress={sendMessage} style={styles.sendBtn}>
-          <Text style={{ color: '#fff' }}>Send</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <MaterialCommunityIcons name="robot" size={24} color="#4caf50" />
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>ByteBot</Text>
+          <Text style={styles.headerSubtitle}>Your AI Nutrition Assistant</Text>
+        </View>
       </View>
-    </KeyboardAvoidingView>
+
+      <KeyboardAvoidingView
+        style={styles.contentContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => index.toString()}
+          contentContainerStyle={styles.chat}
+        />
+
+        {loading && (
+          <ActivityIndicator 
+            size="small" 
+            color="#4caf50" 
+            style={styles.loadingIndicator} 
+          />
+        )}
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Ask ByteBot something..."
+            placeholderTextColor="rgba(255,255,255,0.5)"
+            style={styles.input}
+            value={input}
+            onChangeText={setInput}
+            multiline
+          />
+          <TouchableOpacity 
+            onPress={sendMessage} 
+            style={styles.sendBtn}
+            disabled={input.trim() === '' || loading}
+          >
+            <MaterialCommunityIcons 
+              name="send" 
+              size={20} 
+              color="#fff" 
+            />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  chat: { padding: 15 },
+  container: { 
+    flex: 1, 
+    backgroundColor: 'rgba(0,0,0,1)',
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(76,175,80,0.3)',
+    backgroundColor: 'rgba(28, 28, 30, 0.95)',
+  },
+  headerTextContainer: {
+    marginLeft: 12,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+    marginTop: 2,
+  },
+  chat: { 
+    padding: 15,
+  },
   bubble: {
-    maxWidth: '75%',
+    maxWidth: '80%',
     padding: 12,
     marginBottom: 10,
     borderRadius: 15,
   },
   userBubble: {
-    backgroundColor: '#c8e6c9',
+    backgroundColor: 'rgba(76,175,80,0.2)',
     alignSelf: 'flex-end',
     borderBottomRightRadius: 0,
+    borderWidth: 1,
+    borderColor: 'rgba(76,175,80,0.3)',
   },
   botBubble: {
-    backgroundColor: '#eeeeee',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     alignSelf: 'flex-start',
     borderBottomLeftRadius: 0,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
-  bubbleText: { fontSize: 15 },
+  bubbleText: { 
+    fontSize: 15,
+    color: '#fff',
+    lineHeight: 20,
+  },
+  loadingIndicator: {
+    marginBottom: 10,
+  },
   inputContainer: {
     flexDirection: 'row',
     padding: 10,
     borderTopWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
+    borderColor: 'rgba(76,175,80,0.3)',
+    alignItems: 'flex-end',
+    backgroundColor: 'rgba(28, 28, 30, 0.95)',
   },
   input: {
     flex: 1,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 8,
     marginRight: 10,
+    color: '#fff',
+    maxHeight: 100,
+    minHeight: 40,
   },
   sendBtn: {
     backgroundColor: '#4caf50',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    padding: 10,
     borderRadius: 20,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 1,
   },
 });
 
 const markdownStyles: { [key: string]: TextStyle } = {
-    body: {
-      fontSize: 15,
-      color: '#333',
-    },
-    strong: {
-      fontWeight: 'bold',
-    },
-    em: {
-      fontStyle: 'italic',
-    },
-    code_inline: {
-      backgroundColor: '#e0e0e0',
-      fontFamily: 'Courier',
-      paddingHorizontal: 4,
-      paddingVertical: 2,
-      borderRadius: 4,
-    },
-  };
-  
+  body: {
+    fontSize: 15,
+    color: '#fff',
+    lineHeight: 20,
+  },
+  strong: {
+    fontWeight: 'bold',
+    color: '#4caf50',
+  },
+  em: {
+    fontStyle: 'italic',
+    color: '#fff',
+  },
+  code_inline: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    fontFamily: 'Courier',
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    borderRadius: 4,
+    color: '#4caf50',
+  },
+  code_block: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(76,175,80,0.3)',
+    marginVertical: 8,
+  },
+  link: {
+    color: '#4caf50',
+    textDecorationLine: 'underline',
+  },
+  bullet_list: {
+    marginVertical: 8,
+  },
+  ordered_list: {
+    marginVertical: 8,
+  },
+  paragraph: {
+    marginVertical: 8,
+  },
+  heading1: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#4caf50',
+    marginVertical: 8,
+  },
+  heading2: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4caf50',
+    marginVertical: 8,
+  },
+  heading3: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4caf50',
+    marginVertical: 8,
+  },
+};
 
 export default ChatbotScreen;

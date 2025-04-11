@@ -16,6 +16,7 @@ const PreferenceForm = () => {
     gender: '',
     height: '',
     weight: '',
+    targetweight: '',
     dietarypreferences: '',
     likesanddislikes: ['', '', ''],
     banned: ['', '', ''],
@@ -52,7 +53,7 @@ const PreferenceForm = () => {
 
       await setDoc(doc(FIRESTORE_DB, 'users', user.uid), formData);
       Alert.alert('Preferences saved successfully!');
-      navigation.navigate("Main" as never); // 👈 cast it as 'never' if TS complains
+      navigation.navigate("Main" as never);
     } catch (err) {
       console.error('Error saving to Firestore:', err);
       Alert.alert('Error saving. Check your internet or Firestore rules.');
@@ -82,6 +83,9 @@ const PreferenceForm = () => {
 
       <Text style={styles.label}>Weight (in kg):</Text>
       <TextInput style={styles.input} value={formData.weight} onChangeText={text => handleChange('weight', text)} keyboardType="numeric" />
+
+      <Text style={styles.label}>Target Weight (in kg):</Text>
+      <TextInput style={styles.input} value={formData.targetweight} onChangeText={text => handleChange('targetweight', text)} keyboardType="numeric" />
     </View>,
 
     <View key="step3">
@@ -140,35 +144,53 @@ const PreferenceForm = () => {
         <Picker.Item label="Maintain" value="Maintain" />
       </Picker>
 
-      <Text style={styles.label}>Budget (in ₹):</Text>
+      <Text style={styles.label}>Budget:</Text>
       <TextInput style={styles.input} value={formData.budget} onChangeText={text => handleChange('budget', text)} keyboardType="numeric" />
     </View>,
   ];
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {steps[step]}
       <Button title={step === steps.length - 1 ? 'Submit' : 'Next'} onPress={handleNext} />
-    </View>
+    </ScrollView>
   );
 };
 
-export default PreferenceForm;
-
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    justifyContent:"center",
+    padding: 16,
+    flexGrow: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 1)', // Dark background
   },
   label: {
+    fontSize: 16,
+    marginTop: 12,
     fontWeight: 'bold',
-    marginTop: 10,
+    color: '#fff', // White text for contrast
   },
   input: {
     borderWidth: 1,
-    borderColor: '#aaa',
-    padding: 8,
-    marginVertical: 5,
-    borderRadius: 5,
+    borderColor: 'rgba(255, 255, 255, 0.5)', // Subtle white border
+    padding: 10,
+    borderRadius: 8, // Rounded corners for a modern look
+    marginBottom: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Light translucent background
+    color: '#fff', // White text for readability
+  },
+  button: {
+    backgroundColor: '#4caf50', // Green button for action
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff', // White text for contrast
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
+
+export default PreferenceForm;
