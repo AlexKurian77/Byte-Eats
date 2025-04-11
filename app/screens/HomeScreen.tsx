@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@/types';
 
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const features = [
   { title: 'Custom Diet Plan Generator', screen: 'DietPlan' },
   { title: 'Macro & Calorie Tracking', screen: 'MacroTracker' },
@@ -16,10 +19,10 @@ const features = [
 ];
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.heading}>Welcome to Byte Eats! 🍽️</Text>
 
       <View style={styles.grid}>
@@ -27,14 +30,13 @@ const HomeScreen = () => {
           <TouchableOpacity
             key={idx}
             style={styles.featureBtn}
-            onPress={() => navigation.navigate(feat.screen)}
-            className='flex justify-center'
+            onPress={() => navigation.navigate(feat.screen as keyof RootStackParamList)}
           >
             <Text style={styles.btnText}>{feat.title}</Text>
           </TouchableOpacity>
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -43,6 +45,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
     flex: 1,
+    justifyContent:"center",
   },
   heading: {
     fontSize: 26,
@@ -62,6 +65,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 10,
     elevation: 3,
+    justifyContent: "center",
   },
   btnText: {
     color: '#fff',
