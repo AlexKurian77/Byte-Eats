@@ -29,7 +29,7 @@ const features = [
   },
   { 
     title: 'Smart Grocery Planner', 
-    screen: 'GroceryList',
+    screen: 'Pricing',
     icon: 'cart-outline',
     description: 'Generate lists with price comparisons'
   },
@@ -58,7 +58,9 @@ const HomeScreen = () => {
           <View style={styles.profileIcon}>
             <MaterialCommunityIcons name="account" size={24} color="#4caf50" />
           </View>
-          <Text style={styles.heading}>Byte Eats! 🍽️</Text>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={styles.heading}>ByteEats</Text>
+            </View>
           <TouchableOpacity style={styles.notificationIcon}>
             <MaterialCommunityIcons name="bell-outline" size={24} color="white" />
           </TouchableOpacity>
