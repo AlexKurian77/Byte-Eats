@@ -1,23 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 const ProfileScreen = () => {
+  const [profile, setProfile] = useState(null);
+  const db = getFirestore();
+  const user = getAuth().currentUser;
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+      try {
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setProfile(docSnap.data());
+        } else {
+          console.log('No such document!');
+        }
+      } catch (error) {
+        console.log('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (!profile) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading your legendary profile bro...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Image
         style={styles.avatar}
       />
-      <Text style={styles.name}>Alexander Kurian</Text>
-      <Text style={styles.goal}>Goal: Cutting</Text>
+      <Text style={styles.name}>{profile.name || 'No Name Found 😅'}</Text>
+      <Text style={styles.goal}>Goal: {profile.goal || 'No Goal'}</Text>
 
       <View style={styles.statsContainer}>
         <View style={styles.statBox}>
-          <Text style={styles.statNum}>80kg</Text>
+          <Text style={styles.statNum}>{profile.weight || '--'}kg</Text>
           <Text style={styles.statLabel}>Current Weight</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={styles.statNum}>75kg</Text>
+          <Text style={styles.statNum}>{profile.targetWeight || '--'}kg</Text>
           <Text style={styles.statLabel}>Target Weight</Text>
+        </View>
+      </View>
+      <View style={styles.statsContainer}>
+        <View style={styles.statBox}>
+          <Text style={styles.statNum}>{profile.height || '--'}cm</Text>
+          <Text style={styles.statLabel}>Current Height</Text>
         </View>
       </View>
 

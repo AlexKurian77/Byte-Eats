@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { FIREBASE_AUTH } from '../../firebaseConfig'; // Import firebase config
+import { FIREBASE_AUTH } from '../../firebaseConfig';
 
 const SignUpScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Handle sign-up
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
@@ -18,9 +17,9 @@ const SignUpScreen = ({ navigation }: any) => {
     try {
       await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
       Alert.alert('Success', 'Account created successfully!');
-      navigation.navigate('Home'); // Navigate to home screen after successful sign-up
+      navigation.navigate('PreferenceSlidehow');
     } catch (error: any) {
-      Alert.alert('Sign Up Failed', error.message); // Show error message
+      Alert.alert('Sign Up Failed', error.message);
     }
   };
 
@@ -55,8 +54,8 @@ const SignUpScreen = ({ navigation }: any) => {
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.link}>Already have an account? Log in</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} className='flex-row mt-4'>
+        <Text>Already have an account?</Text><Text style={styles.link}>Log in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#007bff',
+    backgroundColor: '#4caf50',
     borderRadius: 5,
     alignItems: 'center',
   },
@@ -95,8 +94,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   link: {
-    color: '#007bff',
-    marginTop: 20,
+    color: '#4caf50',
+    marginLeft:5,
   },
 });
 

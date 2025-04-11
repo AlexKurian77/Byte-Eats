@@ -13,5 +13,6 @@ export type RootStackParamList = {
     MealChart: undefined;
     GroceryList: undefined;
     Profile: undefined;
+    PreferenceSlidehow : undefined;
   };
   

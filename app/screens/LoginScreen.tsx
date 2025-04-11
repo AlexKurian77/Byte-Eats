@@ -41,8 +41,8 @@ const LoginScreen = ({ navigation }: any) => {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-        <Text style={styles.link}>Don't have an account? Sign up</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('SignUp')} className='flex-row mt-4'>
+        <Text>Don't have an account?</Text><Text style={styles.link}>Sign up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#007bff',
+    backgroundColor: '#4caf50',
     borderRadius: 5,
     alignItems: 'center',
   },
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   link: {
-    color: '#007bff',
-    marginTop: 20,
+    color: '#4caf50',
+    marginLeft:5,
   },
 });
 

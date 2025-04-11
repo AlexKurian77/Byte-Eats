@@ -9,13 +9,13 @@ import HomeScreen from '../screens/HomeScreen';
 import ChatbotScreen from '../screens/ChatBotScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import DietPlanScreen from '../screens/DietPlanScreen';
-// import MacroTrackerScreen from '../screens/MacroTrackerScreen';
-// import RecipeRecommenderScreen from '../screens/RecipeRecommenderScreen';
-// import PricingScreen from '../screens/PricingScreen';
-// import SearchScreen from '../screens/SearchScreen';
-// import PreferencesScreen from '../screens/PreferencesScreen';
-// import MealChartScreen from '../screens/MealChartScreen';
-// import GroceryListScreen from '../screens/GroceryListScreen';
+import MacroTrackerScreen from '../screens/MacroTrackerScreen';
+import RecipeRecommenderScreen from '../screens/RecipeRecommenderScreen';
+import PricingScreen from '../screens/PricingScreen';
+import SearchScreen from '../screens/SearchScreen';
+import PreferencesScreen from '../screens/PreferencesScreen';
+import MealChartScreen from '../screens/MealChartScreen';
+import GroceryListScreen from '../screens/GroceryListScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,17 +46,15 @@ export default function MainNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* Main tab nav */}
         <Stack.Screen name="MainTabs" component={TabNavigator}/>
-
         <Stack.Screen name="DietPlan" component={DietPlanScreen} options={{headerShown : true}}/>
-        {/* <Stack.Screen name="MacroTracker" component={MacroTrackerScreen} />
-        <Stack.Screen name="RecipeRecommender" component={RecipeRecommenderScreen} />
-        <Stack.Screen name="Pricing" component={PricingScreen} />
-        <Stack.Screen name="Search" component={SearchScreen} />
-        <Stack.Screen name="Preferences" component={PreferencesScreen} />
-        <Stack.Screen name="MealChart" component={MealChartScreen} />
-        <Stack.Screen name="GroceryList" component={GroceryListScreen} /> */}
+        <Stack.Screen name="MacroTracker" component={MacroTrackerScreen} options={{headerShown : true}}/>
+        <Stack.Screen name="RecipeRecommender" component={RecipeRecommenderScreen} options={{headerShown : true}}/>
+        <Stack.Screen name="Pricing" component={PricingScreen} options={{headerShown : true}}/>
+        <Stack.Screen name="Search" component={SearchScreen} options={{headerShown : true}}/>
+        <Stack.Screen name="Preferences" component={PreferencesScreen} options={{headerShown : true}}/>
+        <Stack.Screen name="MealChart" component={MealChartScreen} options={{headerShown : true}}/>
+        <Stack.Screen name="GroceryList" component={GroceryListScreen} options={{headerShown : true}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

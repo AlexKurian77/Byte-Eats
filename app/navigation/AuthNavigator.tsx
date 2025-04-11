@@ -2,21 +2,22 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 
-// 👇 import all your screens here
+// import all your screens here
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
 import DietPlan from '../screens/DietPlanScreen';
-// import MacroTracker from '../screens/MacroTracker';
-// import RecipeRecommender from '../screens/RecipeRecommender';
-// import Pricing from '../screens/Pricing';
-// import Search from '../screens/Search';
-import Chatbot from '../screens/ChatBotScreen';
-// import Preferences from '../screens/Preferences';
-// import MealChart from '../screens/MealChart';
-// import GroceryList from '../screens/GroceryList';
-import Profile from '../screens/ProfileScreen';
+import MacroTrackerScreen from '../screens/MacroTrackerScreen';
 import MainNavigator from './MainNavigator';
+import RecipeRecommenderScreen from '../screens/RecipeRecommenderScreen';
+import PricingScreen from '../screens/PricingScreen';
+import SearchScreen from '../screens/SearchScreen';
+import ChatbotScreen from '../screens/ChatBotScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import PreferencesScreen from '../screens/PreferencesScreen';
+import MealChartScreen from '../screens/MealChartScreen';
+import GroceryListScreen from '../screens/GroceryListScreen';
+import PreferenceSlideshow from '../screens/PreferencesSlideshow';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -27,15 +28,16 @@ const AuthNavigator = () => {
       <Stack.Screen name="SignUp" component={SignupScreen} />
       <Stack.Screen name="Home" component={HomeScreen}/>
       <Stack.Screen name="DietPlan" component={DietPlan} options={{headerShown : true}}/>
-      {/* <Stack.Screen name="MacroTracker" component={MacroTracker} />
-      <Stack.Screen name="RecipeRecommender" component={RecipeRecommender} />
-      <Stack.Screen name="Pricing" component={Pricing} />
-      <Stack.Screen name="Search" component={Search} /> */}
-      <Stack.Screen name="Chatbot" component={Chatbot} />
-      {/* <Stack.Screen name="Preferences" component={Preferences} />
-      <Stack.Screen name="MealChart" component={MealChart} />
-      <Stack.Screen name="GroceryList" component={GroceryList} /> */}
-      <Stack.Screen name="Profile" component={Profile}/>
+      <Stack.Screen name="MacroTracker" component={MacroTrackerScreen} />
+      <Stack.Screen name="RecipeRecommender" component={RecipeRecommenderScreen} />
+      <Stack.Screen name="Pricing" component={PricingScreen} />
+      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="Chatbot" component={ChatbotScreen} />
+      <Stack.Screen name="Preferences" component={PreferencesScreen} />
+      <Stack.Screen name="MealChart" component={MealChartScreen} />
+      <Stack.Screen name="GroceryList" component={GroceryListScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen}/>
+      <Stack.Screen name="PreferenceSlidehow" component={PreferenceSlideshow}/>
       <Stack.Screen name="Main" component={MainNavigator} options={{headerShown : false}}/>
 
     </Stack.Navigator>

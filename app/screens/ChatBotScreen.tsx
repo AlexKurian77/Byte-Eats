@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Constants from 'expo-constants';
+import Markdown from 'react-native-markdown-display';
 
-const GEMINI_API_KEY = Constants.expoConfig?.extra?.geminiApiKey;
 import {
   View,
   TextInput,
@@ -12,12 +12,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  TextStyle,
 } from 'react-native';
 
 type Message = {
   text: string;
   from: 'user' | 'bot';
 };
+
+const GEMINI_API_KEY = Constants.expoConfig?.extra?.geminiApiKey;
 
 const ChatbotScreen = () => {
   const [messages, setMessages] = useState<Message[]>([
@@ -26,19 +29,17 @@ const ChatbotScreen = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const GEMINI_KEY = GEMINI_API_KEY;
-
   const sendMessage = async () => {
     if (input.trim() === '') return;
-  
+
     const userMsg: Message = { text: input, from: 'user' };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
-  
+
     try {
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -47,15 +48,15 @@ const ChatbotScreen = () => {
           }),
         }
       );
-  
+
       const data = await res.json();
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  
+
       const botMsg: Message = {
         text: reply || 'Uhhh I spaced out... can you ask again?',
         from: 'bot',
       };
-  
+
       setMessages(prev => [...prev, botMsg]);
     } catch (err) {
       console.error('Gemini glitchin:', err);
@@ -64,7 +65,7 @@ const ChatbotScreen = () => {
         {
           text: 'Bruh... something broke. Try again in a sec 🛠️',
           from: 'bot',
-        } as Message,
+        },
       ]);
     } finally {
       setLoading(false);
@@ -73,12 +74,19 @@ const ChatbotScreen = () => {
 
   const renderItem = ({ item }: { item: Message }) => (
     <View style={[styles.bubble, item.from === 'user' ? styles.userBubble : styles.botBubble]}>
-      <Text style={styles.bubbleText}>{item.text}</Text>
+      {item.from === 'bot' ? (
+        <Markdown style={markdownStyles}>{item.text}</Markdown>
+      ) : (
+        <Text style={styles.bubbleText}>{item.text}</Text>
+      )}
     </View>
   );
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <FlatList
         data={messages}
         renderItem={renderItem}
@@ -145,5 +153,26 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 });
+
+const markdownStyles: { [key: string]: TextStyle } = {
+    body: {
+      fontSize: 15,
+      color: '#333',
+    },
+    strong: {
+      fontWeight: 'bold',
+    },
+    em: {
+      fontStyle: 'italic',
+    },
+    code_inline: {
+      backgroundColor: '#e0e0e0',
+      fontFamily: 'Courier',
+      paddingHorizontal: 4,
+      paddingVertical: 2,
+      borderRadius: 4,
+    },
+  };
+  
 
 export default ChatbotScreen;
