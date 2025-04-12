@@ -14,8 +14,6 @@ import MacroTrackerScreen from '../screens/MacroTrackerScreen';
 import RecipeRecommenderScreen from '../screens/RecipeRecommenderScreen';
 import PricingScreen from '../screens/PricingScreen';
 import SearchScreen from '../screens/SearchScreen';
-import MealChartScreen from '../screens/MealChartScreen';
-import GroceryListScreen from '../screens/GroceryListScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -99,7 +97,7 @@ const MainNavigator = () => {
           name="DietPlan" 
           component={DietPlanScreen} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Diet Plan'
           }}
         />
@@ -107,7 +105,7 @@ const MainNavigator = () => {
           name="MacroTracker" 
           component={MacroTrackerScreen} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Macro Tracker'
           }}
         />
@@ -115,7 +113,7 @@ const MainNavigator = () => {
           name="RecipeRecommender" 
           component={RecipeRecommenderScreen} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Recipe Recommendations'
           }}
         />
@@ -123,7 +121,7 @@ const MainNavigator = () => {
           name="Pricing" 
           component={PricingScreen} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Pricing'
           }}
         />
@@ -131,24 +129,8 @@ const MainNavigator = () => {
           name="Search" 
           component={SearchScreen} 
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Search'
-          }}
-        />
-        <Stack.Screen 
-          name="MealChart" 
-          component={MealChartScreen} 
-          options={{
-            headerShown: true,
-            title: 'Meal Chart'
-          }}
-        />
-        <Stack.Screen 
-          name="GroceryList" 
-          component={GroceryListScreen} 
-          options={{
-            headerShown: true,
-            title: 'Grocery List'
           }}
         />
       </Stack.Navigator>

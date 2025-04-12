@@ -181,14 +181,10 @@ const MacroTrackerScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
-          <MaterialCommunityIcons name="chevron-left" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Nutrition</Text>
+        
+        <Text style={styles.headerTitle}>Meal & Nutrtion Tracking</Text>
         <View style={styles.headerIcons}>
-          <TouchableOpacity style={styles.headerIcon}>
-            <MaterialCommunityIcons name="file-document-outline" size={24} color="#fff" />
-          </TouchableOpacity>
+          
           <TouchableOpacity style={styles.headerIcon}>
             <MaterialCommunityIcons name="cog-outline" size={24} color="#fff" />
           </TouchableOpacity>
@@ -214,7 +210,6 @@ const MacroTrackerScreen = () => {
           <MaterialCommunityIcons name="chevron-left" size={24} color="#fff" />
         </TouchableOpacity>
         <View>
-          <Text style={styles.dateLabel}>Day View</Text>
           <Text style={styles.selectedDate}>{selectedDate}</Text>
         </View>
         <TouchableOpacity>
@@ -245,7 +240,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 16,
+    marginLeft: 0,
   },
   headerIcons: {
     flexDirection: 'row',
