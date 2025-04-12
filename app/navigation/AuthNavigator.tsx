@@ -14,8 +14,6 @@ import PricingScreen from '../screens/PricingScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ChatbotScreen from '../screens/ChatBotScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import MealChartScreen from '../screens/MealChartScreen';
-import GroceryListScreen from '../screens/GroceryListScreen';
 import PreferenceSlideshow from '../screens/PreferencesSlideshow';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -32,12 +30,9 @@ const AuthNavigator = () => {
       <Stack.Screen name="Pricing" component={PricingScreen} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Chatbot" component={ChatbotScreen} />
-      <Stack.Screen name="MealChart" component={MealChartScreen} />
-      <Stack.Screen name="GroceryList" component={GroceryListScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen}/>
       <Stack.Screen name="PreferenceSlidehow" component={PreferenceSlideshow}/>
       <Stack.Screen name="Main" component={MainNavigator} options={{headerShown : false}}/>
-
     </Stack.Navigator>
   );
 };
