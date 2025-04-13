@@ -31,7 +31,7 @@ const AuthNavigator = () => {
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Chatbot" component={ChatbotScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen}/>
-      <Stack.Screen name="PreferenceSlidehow" component={PreferenceSlideshow}/>
+      <Stack.Screen name="PreferenceSlidehow" component={PreferenceSlideshow} options={{headerShown : false}}/>
       <Stack.Screen name="Main" component={MainNavigator} options={{headerShown : false}}/>
     </Stack.Navigator>
   );

@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, SafeAreaView, Image } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 
 const SignUpScreen = ({ navigation }: any) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false
+    });
+  }, [navigation]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,12 +30,17 @@ const SignUpScreen = ({ navigation }: any) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Sign Up</Text>
+    <SafeAreaView style={styles.container}> 
+      <Image
+          source={require('../../assets/images/Picture1Remastered.png')}
+          style={{ width: 200, height: 150, alignSelf: 'center', marginBottom: 20 }}
+      />
+      <Text style={styles.welcomeText}>Let's Customize ByteEats for Yourself !</Text>
       
       <TextInput
         style={styles.input}
         placeholder="Enter your email"
+        placeholderTextColor="white"
         value={email}
         onChangeText={setEmail}
       />
@@ -37,6 +48,7 @@ const SignUpScreen = ({ navigation }: any) => {
       <TextInput
         style={styles.input}
         placeholder="Enter your password"
+        placeholderTextColor="white"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -45,57 +57,129 @@ const SignUpScreen = ({ navigation }: any) => {
       <TextInput
         style={styles.input}
         placeholder="Confirm your password"
+        placeholderTextColor="white"
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
       
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+      <TouchableOpacity style={styles.continueButton} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
-      
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} className='flex-row mt-4'>
-        <Text>Already have an account?</Text><Text style={styles.link}>Log in</Text>
+
+      <View style={styles.orContainer}>
+        <View style={styles.orLine} />
+        <Text style={styles.orText}>OR</Text>
+        <View style={styles.orLine} />
+      </View>
+
+      <TouchableOpacity style={styles.googleButton}>
+        <MaterialCommunityIcons name="google" size={24} color="white" />
+        <Text style={styles.googleButtonText}>Continue with Google</Text>
       </TouchableOpacity>
-    </View>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginContainer}>
+        <Text style={styles.loginText}>Already have an account? </Text>
+        <Text style={styles.loginLink}>Log in</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 30,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 20,
+    marginLeft: 20,
+    fontWeight: '600',
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#1a1a1a',
+    paddingTop: 20,
+    justifyContent:"center",
   },
-  header: {
-    fontSize: 30,
+  welcomeText: {
+    fontSize: 23,
     fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginHorizontal: 20,
     marginBottom: 40,
   },
   input: {
-    width: '100%',
+    width: '90%',
+    alignSelf: 'center',
     padding: 15,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 10,
+    backgroundColor: '#2a2a2a',
+    color: 'white',
   },
-  button: {
-    width: '100%',
+  continueButton: {
+    width: '90%',
+    alignSelf: 'center',
     padding: 15,
     backgroundColor: '#4caf50',
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  link: {
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+    paddingHorizontal: 20,
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#4caf50',
+  },
+  orText: {
+    color: 'white',
+    marginHorizontal: 10,
+    fontSize: 16,
+  },
+  googleButton: {
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    padding: 15,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleButtonText: {
+    color: 'white',
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  loginText: {
+    color: '#888',
+    fontSize: 14,
+  },
+  loginLink: {
     color: '#4caf50',
-    marginLeft:5,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 

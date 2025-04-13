@@ -14,6 +14,8 @@ import MacroTrackerScreen from '../screens/MacroTrackerScreen';
 import RecipeRecommenderScreen from '../screens/RecipeRecommenderScreen';
 import PricingScreen from '../screens/PricingScreen';
 import SearchScreen from '../screens/SearchScreen';
+import NutritionAnalyzer from '../screens/NutritionAnalyzer';
+import DiaryUI from '../screens/Diary';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -59,7 +61,7 @@ const TabNavigator = () => (
     />
     <Tab.Screen 
       name="Diary" 
-      component={MacroTrackerScreen}
+      component={DiaryUI}
       options={{
         tabBarLabel: 'Diary',
       }}
@@ -131,6 +133,14 @@ const MainNavigator = () => {
           options={{
             headerShown: false,
             title: 'Search'
+          }}
+        />
+        <Stack.Screen 
+          name="NutritionAnalyzer" 
+          component={NutritionAnalyzer} 
+          options={{
+            headerShown: false,
+            title: 'Nutrional Analyzer'
           }}
         />
       </Stack.Navigator>

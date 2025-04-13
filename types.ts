@@ -14,5 +14,6 @@ export type RootStackParamList = {
     GroceryList: undefined;
     Profile: undefined;
     PreferenceSlidehow : undefined;
+    NutritionAnalyzer: undefined;
   };
   

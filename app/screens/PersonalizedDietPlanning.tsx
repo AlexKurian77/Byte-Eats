@@ -13,20 +13,62 @@ import { Ionicons } from '@expo/vector-icons'; // For icons if needed, adjust li
 // --- Configuration ---
 const GEMINI_API_KEY = Constants.expoConfig?.extra?.geminiApiKey;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-const EDAMAM_APP_ID = Constants.expoConfig?.extra?.edamamappid;
-const EDAMAM_APP_KEY = Constants.expoConfig?.extra?.edamamappkey;
-const EDAMAM_SEARCH_URL = 'https://api.edamam.com/search';
+
+// Nutritionix API Configuration
+const NUTRITIONIX_APP_ID = 'a1fe1cbf';
+const NUTRITIONIX_API_KEY = '5c8bc56ba765a6991bdfde11b6168e5e';
+const NUTRITIONIX_SEARCH_URL = 'https://trackapi.nutritionix.com/v2/search/instant';
+const NUTRITIONIX_NUTRIENTS_URL = 'https://trackapi.nutritionix.com/v2/natural/nutrients';
+
+// --- Types ---
+interface NutritionixItem {
+    food_name: string;
+    serving_unit: string;
+    serving_qty: number;
+    nf_calories: number;
+    nf_protein: number;
+    nf_total_carbohydrate: number;
+    nf_total_fat: number;
+    photo: {
+        thumb: string;
+        highres: string;
+    };
+}
+
+interface Profile {
+    goal: string;
+    activityLevel: string;
+    weight: number;
+    targetweight: number;
+    height: number;
+    budget: string;
+}
+
+interface Recipe {
+    id: string;
+    title: string;
+    image: string;
+    calories: number;
+    ingredients: string[];
+    url: string;
+    nutrients: {
+        protein: number;
+        carbs: number;
+        fat: number;
+    };
+}
 
 // --- Helper Function ---
-const getSafeProfileValue = (value, defaultValue = '--') => value || defaultValue;
+const getSafeProfileValue = (value: any, defaultValue: string = '--'): string => 
+    value?.toString() || defaultValue;
 
 const DietPlanScreen = () => {
-    const [profile, setProfile] = useState(null);
-    const [output, setOutput] = useState('');
-    const [isFetchingProfile, setIsFetchingProfile] = useState(true); // More specific loading state
-    const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
-    const [mealRecipes, setMealRecipes] = useState([]);
-    const [error, setError] = useState(null); // For displaying errors
+    const [profile, setProfile] = useState<Profile | null>(null);
+    const [output, setOutput] = useState<string>('');
+    const [isFetchingProfile, setIsFetchingProfile] = useState<boolean>(true);
+    const [isGeneratingPlan, setIsGeneratingPlan] = useState<boolean>(false);
+    const [mealRecipes, setMealRecipes] = useState<Recipe[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
     const db = getFirestore();
     const auth = getAuth(); // Use auth instance
@@ -35,11 +77,11 @@ const DietPlanScreen = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             setIsFetchingProfile(true);
-            setError(null); // Reset error on fetch
-            const user = auth.currentUser; // Get user inside effect or ensure it's stable
+            setError(null);
+            const user = auth.currentUser;
             if (!user) {
                 console.warn('No user logged in.');
-                setError('You need to be logged in to view your profile.');
+                setError('You need to be logged in to view your profile');
                 setIsFetchingProfile(false);
                 return;
             }
@@ -48,10 +90,16 @@ const DietPlanScreen = () => {
                 const docRef = doc(db, 'users', user.uid);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    setProfile(docSnap.data());
+                    const data = docSnap.data();
+                    // Validate the data has required fields
+                    if (data) {
+                        setProfile(data as Profile);
+                    } else {
+                        setError('Profile data is incomplete');
+                    }
                 } else {
                     console.log('No profile data found in Firestore.');
-                    setError('Complete your profile to generate a diet plan.'); // More specific message
+                    setError('Complete your profile to generate a diet plan.');
                 }
             } catch (err) {
                 console.error('Error fetching profile from Firestore:', err);
@@ -64,52 +112,78 @@ const DietPlanScreen = () => {
         fetchProfile();
     }, [auth, db]); // Dependency array includes stable references
 
-    // --- Fetch Recipe from Edamam ---
-    const getRecipeFromEdamam = useCallback(async (mealName) => {
-        // Basic check for valid API keys
-        if (!EDAMAM_APP_ID || !EDAMAM_APP_KEY) {
-            console.error("Edamam API ID or Key is missing.");
-            return null; // Or handle appropriately
-        }
-        const url = `${EDAMAM_SEARCH_URL}?q=${encodeURIComponent(mealName)}&app_id=${EDAMAM_APP_ID}&app_key=${EDAMAM_APP_KEY}&to=1`;
-
+    // --- Fetch Recipe from Nutritionix ---
+    const getRecipeFromNutritionix = useCallback(async (mealName: string): Promise<Recipe | null> => {
         try {
-            const response = await axios.get(url);
-            const firstHit = response.data.hits?.[0]?.recipe;
-            if (!firstHit) {
-                console.warn(`No Edamam recipe found for: ${mealName}`);
+            const searchResponse = await axios.get(NUTRITIONIX_SEARCH_URL, {
+                params: {
+                    query: mealName,
+                    detailed: true,
+                },
+                headers: {
+                    'x-app-id': NUTRITIONIX_APP_ID,
+                    'x-app-key': NUTRITIONIX_API_KEY,
+                }
+            });
+
+            if (!searchResponse.data.common?.[0]) {
+                console.warn(`No Nutritionix results found for: ${mealName}`);
                 return null;
             }
 
-            return {
-                id: firstHit.uri, // Use URI as a potential key
-                title: firstHit.label,
-                image: firstHit.image,
-                calories: Math.round(firstHit.calories),
-                ingredients: firstHit.ingredientLines,
-                url: firstHit.url,
+            const nutrientsResponse = await axios.post(
+                NUTRITIONIX_NUTRIENTS_URL,
+                {
+                    query: mealName,
+                },
+                {
+                    headers: {
+                        'x-app-id': NUTRITIONIX_APP_ID,
+                        'x-app-key': NUTRITIONIX_API_KEY,
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
+
+            const foodData = nutrientsResponse.data.foods[0];
+            
+            const recipe: Recipe = {
+                id: `${foodData.food_name}-${Date.now()}`,
+                title: foodData.food_name,
+                image: foodData.photo.highres || foodData.photo.thumb,
+                calories: Math.round(foodData.nf_calories),
+                ingredients: [
+                    `Serving Size: ${foodData.serving_qty} ${foodData.serving_unit}`,
+                    `Protein: ${Math.round(foodData.nf_protein)}g`,
+                    `Carbs: ${Math.round(foodData.nf_total_carbohydrate)}g`,
+                    `Fat: ${Math.round(foodData.nf_total_fat)}g`
+                ],
+                url: `https://www.nutritionix.com/food/${foodData.food_name}`,
+                nutrients: {
+                    protein: foodData.nf_protein,
+                    carbs: foodData.nf_total_carbohydrate,
+                    fat: foodData.nf_total_fat
+                }
             };
-        } catch (err) {
-            // Handle specific error types if needed (e.g., network, 4xx)
-            console.error(`Edamam API error for "${mealName}":`, err.response?.data || err.message);
-            return null; // Return null to allow Promise.all to continue
+            
+            return recipe;
+        } catch (err: any) {
+            console.error(`Nutritionix API error for "${mealName}":`, err.response?.data || err.message);
+            return null;
         }
-    }, []); // No dependencies needed if constants are stable
+    }, []);
 
     // --- Extract Meal Names (Keep it simple for now) ---
-    const extractMealNames = (text) => {
-        // Simple regex, assuming Gemini consistently uses **Meal Name**
+    const extractMealNames = (text: string): string[] => {
         const regex = /\*\*(.*?)\*\*/g;
-        const meals = new Set(); // Use Set to avoid duplicates if Gemini repeats names
+        const meals = new Set<string>();
         let match;
         while ((match = regex.exec(text)) !== null) {
-            // Basic cleanup: trim whitespace
             const cleanedName = match[1].trim();
-            if (cleanedName) { // Avoid adding empty strings
-                 meals.add(cleanedName);
+            if (cleanedName) {
+                meals.add(cleanedName);
             }
         }
-        console.log("Extracted meals:", Array.from(meals)); // Debugging
         return Array.from(meals);
     };
 
@@ -139,14 +213,16 @@ const DietPlanScreen = () => {
           - Target Weight: ${getSafeProfileValue(profile.targetweight)} kg
           - Height: ${getSafeProfileValue(profile.height)} cm
           - Budget Preference: ${getSafeProfileValue(profile.budget, 'moderate')}
+          - Dislikes: ${getSafeProfileValue(profile.banned?.[0], 'none')}
 
           Instructions:
-          1. Create a plan covering 7 days (Day 1 to Day 7).
+          1. Create a plan covering 1 day
           2. For each day, include meals for Breakfast, Lunch, Dinner, and at least one Snack.
           3. Ensure meals are varied, balanced (protein, carbs, healthy fats), and align with the user's goal and budget.
           4. Be specific with meal names and provide estimated portion sizes where possible (e.g., "1 cup", "100g").
           5. Format each meal name clearly using Markdown bold: **Meal Name**. Example: **Grilled Chicken Salad**.
-          6. Keep the language encouraging and practical.
+          6. Don't give any explanation paragraphs just information 
+          7. Keep the response very short and concise
         `;
 
         try {
@@ -167,37 +243,23 @@ const DietPlanScreen = () => {
 
             // Extract meal names and fetch recipes
             const mealNames = extractMealNames(result);
-            if (mealNames.length > 0 && EDAMAM_APP_ID && EDAMAM_APP_KEY) {
-                 console.log(`Workspaceing ${mealNames.length} recipes from Edamam...`);
-                const recipePromises = mealNames.map(name => getRecipeFromEdamam(name));
+            if (mealNames.length > 0) {
+                console.log(`Fetching ${mealNames.length} recipes from Nutritionix...`);
+                const recipePromises = mealNames.map(name => getRecipeFromNutritionix(name));
                 const fetchedRecipes = await Promise.all(recipePromises);
-                const validRecipes = fetchedRecipes.filter(Boolean); // Remove null results
-                 console.log(`Successfully fetched ${validRecipes.length} recipes.`);
+                const validRecipes = fetchedRecipes.filter((recipe): recipe is Recipe => recipe !== null);
+                console.log(`Successfully fetched ${validRecipes.length} recipes.`);
                 setMealRecipes(validRecipes);
-            } else if (mealNames.length > 0) {
-                 console.warn("Edamam API keys missing, skipping recipe fetch.");
-                 setError("Diet plan generated, but couldn't fetch recipe details (API configuration missing).");
             }
 
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error generating diet plan or fetching recipes:', err);
-            // Provide more specific error feedback
-            let errorMessage = 'Something went wrong. Please try again.';
-            if (err.response) {
-                 // Error from Gemini API
-                 errorMessage = `AI Service Error: ${err.response.data?.error?.message || err.response.status}`;
-             } else if (err.request) {
-                 // Network error
-                 errorMessage = 'Network error. Check your connection and try again.';
-             } else if (err.message.includes('timeout')) {
-                 errorMessage = 'The request timed out. Please try again.';
-             } else {
-                 // Other errors (including the custom one thrown above)
-                 errorMessage = err.message;
-             }
-            setOutput(''); // Clear potentially partial output on error
-            setError(errorMessage); // Set error state to display to user
-            Alert.alert("Generation Failed", errorMessage); // Also show an alert
+            const errorMessage = err.response?.data?.error?.message || 
+                               err.message || 
+                               'Something went wrong. Please try again.';
+            setOutput('');
+            setError(errorMessage);
+            Alert.alert("Generation Failed", errorMessage);
         } finally {
             setIsGeneratingPlan(false);
         }
@@ -216,17 +278,20 @@ const DietPlanScreen = () => {
         </View>
     );
 
-     const renderRecipeCard = (meal, index) => (
+     const renderRecipeCard = (meal: Recipe, index: number) => (
          <View key={meal.id || index} style={styles.recipeCard}>
             <Text style={styles.recipeTitle}>{meal.title}</Text>
             {meal.image && <Image source={{ uri: meal.image }} style={styles.recipeImage} resizeMode="cover" />}
-            <Text style={styles.recipeDetail}>Est. Calories: {meal.calories}</Text>
-            <Text style={styles.recipeLabel}>Ingredients:</Text>
-            {meal.ingredients.map((ingredient, i) => (
+            <Text style={styles.recipeDetail}>Calories: {meal.calories} kcal</Text>
+            <Text style={styles.recipeLabel}>Nutrition Facts:</Text>
+            {meal.ingredients.map((ingredient: string, i: number) => (
                 <Text key={i} style={styles.ingredientItem}>• {ingredient}</Text>
             ))}
-            <TouchableOpacity onPress={() => Linking.openURL(meal.url)}>
-                <Text style={styles.recipeLink}>View Full Recipe</Text>
+            <TouchableOpacity 
+                style={styles.viewMoreButton}
+                onPress={() => Linking.openURL(meal.url)}
+            >
+                <Text style={styles.viewMoreButtonText}>View More Details</Text>
             </TouchableOpacity>
          </View>
      );
@@ -267,7 +332,7 @@ const DietPlanScreen = () => {
             {/* Display Generated Plan */}
             {output && !isGeneratingPlan && ( // Render Markdown only when not generating
                 <View style={styles.outputContainer}>
-                    <Text style={styles.sectionHeading}>Your 7-Day Plan</Text>
+                    <Text style={styles.sectionHeading}>Your 1-Day Plan</Text>
                     {/* Apply specific styles for Markdown elements */}
                     <Markdown style={markdownStyles}>{output}</Markdown>
                 </View>
@@ -412,12 +477,19 @@ const styles = StyleSheet.create({
         marginLeft: 5, // Indent ingredients slightly
         lineHeight: 20,
     },
-    recipeLink: {
-        fontSize: 15,
-        color: accentColor, // Use accent color for links
+    viewMoreButton: {
+        backgroundColor: accentColor,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
         marginTop: 10,
+    },
+    viewMoreButtonText: {
+        color: primaryTextColor,
+        fontSize: 15,
         fontWeight: '600',
-        textDecorationLine: 'underline',
     },
     errorContainer: {
         flexDirection: 'row',

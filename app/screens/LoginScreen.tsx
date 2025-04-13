@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, SafeAreaView, Image } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
+
 
 const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -18,13 +20,23 @@ const LoginScreen = ({ navigation }: any) => {
     }
   };
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false
+    });
+  }, [navigation]);
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Login</Text>
+    <SafeAreaView style={styles.container}>
+      <Image
+          source={require('../../assets/images/Picture1Remastered.png')}
+          style={{ width: 200, height: 150, alignSelf: 'center', marginBottom: 20 }}
+      />
+      <Text style={styles.welcomeText}></Text>
       
       <TextInput
         style={styles.input}
         placeholder="Enter your email"
+        placeholderTextColor="white"
         value={email}
         onChangeText={setEmail}
       />
@@ -32,57 +44,117 @@ const LoginScreen = ({ navigation }: any) => {
       <TextInput
         style={styles.input}
         placeholder="Enter your password"
+        placeholderTextColor="white"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
       
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      <TouchableOpacity style={styles.continueButton} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Log in</Text>
+      </TouchableOpacity>
+
+      <View style={styles.orContainer}>
+        <View style={styles.orLine} />
+        <Text style={styles.orText}>OR</Text>
+        <View style={styles.orLine} />
+      </View>
+
+      <TouchableOpacity style={styles.googleButton}>
+        <MaterialCommunityIcons name="google" size={24} color="white" />
+        <Text style={styles.googleButtonText}>Continue with Google</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => navigation.navigate('SignUp')} className='flex-row mt-4'>
-        <Text>Don't have an account?</Text><Text style={styles.link}>Sign up</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={styles.signupContainer}>
+        <Text style={styles.signupText}>Don't have an account? </Text>
+        <Text style={styles.signupLink}>Sign up</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    backgroundColor: '#1a1a1a',
+    paddingTop: 20,
+    justifyContent:"center",
   },
-  header: {
-    fontSize: 30,
+  welcomeText: {
+    fontSize: 28,
     fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginHorizontal: 20,
     marginBottom: 40,
   },
   input: {
-    width: '100%',
+    width: '90%',
+    alignSelf: 'center',
     padding: 15,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    backgroundColor: '#2a2a2a',
+    color: 'white',
+    borderRadius:10,
   },
-  button: {
-    width: '100%',
+  continueButton: {
+    width: '90%',
+    alignSelf: 'center',
     padding: 15,
     backgroundColor: '#4caf50',
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  link: {
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+    paddingHorizontal: 20,
+  },
+  orLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#4caf50',
+  },
+  orText: {
+    color: 'white',
+    marginHorizontal: 10,
+    fontSize: 16,
+  },
+  googleButton: {
+    width: '90%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    padding: 15,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleButtonText: {
+    color: 'white',
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  signupText: {
+    color: '#888',
+    fontSize: 14,
+  },
+  signupLink: {
     color: '#4caf50',
-    marginLeft:5,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
 

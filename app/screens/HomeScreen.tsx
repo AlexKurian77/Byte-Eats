@@ -45,6 +45,12 @@ const features = [
     icon: 'account-outline',
     description: 'Manage your progress'
   },
+  { 
+    title: 'Nutrition Analyzer', 
+    screen: 'NutritionAnalyzer',
+    icon: 'account-outline',
+    description: 'Check Nutrition Counts of your food'
+  },
 ];
 
 const HomeScreen = () => {

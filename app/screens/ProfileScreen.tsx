@@ -30,7 +30,7 @@ const ProfileScreen = () => {
   if (!profile) {
     return (
       <View style={styles.container}>
-        <Text>Loading your legendary profile bro...</Text>
+        <Text style={styles.loadingText}>Loading your legendary profile...</Text>
       </View>
     );
   }
@@ -39,6 +39,7 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <Image
         style={styles.avatar}
+        source={{ uri: profile.avatar || 'https://via.placeholder.com/100' }}
       />
       <Text style={styles.name}>{profile.name || 'No Name Found 😅'}</Text>
       <Text style={styles.goal}>Goal: {profile.goal || 'No Goal'}</Text>
@@ -49,7 +50,7 @@ const ProfileScreen = () => {
           <Text style={styles.statLabel}>Current Weight</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={styles.statNum}>{profile.targetWeight || '--'}kg</Text>
+          <Text style={styles.statNum}>{profile.targetweight || '--'}kg</Text>
           <Text style={styles.statLabel}>Target Weight</Text>
         </View>
       </View>
@@ -68,10 +69,37 @@ const ProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', paddingTop: 40, backgroundColor: '#fff' },
-  avatar: { width: 100, height: 100, borderRadius: 50, marginBottom: 10 },
-  name: { fontSize: 24, fontWeight: 'bold', marginBottom: 5 },
-  goal: { fontSize: 16, color: 'gray', marginBottom: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,1)',
+    alignItems: 'center',
+    paddingTop: 40,
+    justifyContent:"center",
+  },
+  loadingText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: '#4caf50',
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 5,
+  },
+  goal: {
+    fontSize: 16,
+    color: '#888',
+    marginBottom: 20,
+  },
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -80,20 +108,34 @@ const styles = StyleSheet.create({
   },
   statBox: {
     alignItems: 'center',
-    backgroundColor: '#e8f5e9',
+    backgroundColor: 'rgba(76,175,80,0.1)',
     padding: 15,
     borderRadius: 10,
     width: '45%',
+    borderWidth: 1,
+    borderColor: 'rgba(76,175,80,0.3)',
   },
-  statNum: { fontSize: 22, fontWeight: 'bold', color: '#388e3c' },
-  statLabel: { fontSize: 14, color: '#666', marginTop: 5 },
+  statNum: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#4caf50',
+  },
+  statLabel: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 5,
+  },
   editBtn: {
     backgroundColor: '#4caf50',
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 20,
   },
-  editText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  editText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
 
 export default ProfileScreen;
