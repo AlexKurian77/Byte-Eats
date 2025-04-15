@@ -72,11 +72,7 @@ Before you begin, ensure you have the following installed:
    - Create a Firebase project and get your **Firebase configuration**.
    - Update the `firebaseConfig.js` file with your Firebase credentials.
 
-4. **Install Android/iOS dependencies**:
-   - For Android: Make sure you have Android Studio installed and set up the Android emulator.
-   - For iOS: Run `pod install` in the `ios` folder (iOS-only setup).
-
-5. **Run the app**:
+4. **Run the app**:
      ```bash
      npx expo start
      ```
