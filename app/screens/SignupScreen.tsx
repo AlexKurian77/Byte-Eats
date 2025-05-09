@@ -32,8 +32,8 @@ const SignUpScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={styles.container}> 
       <Image
-          source={require('../../assets/images/Picture1Remastered.png')}
-          style={{ width: 200, height: 150, alignSelf: 'center', marginBottom: 20 }}
+          source={require('../../assets/images/BYTE-Eats-logo.png')}
+          style={{ width: 200, height: 160, alignSelf: 'center', marginBottom: 20 }}
       />
       <Text style={styles.welcomeText}>Let's Customize ByteEats for Yourself !</Text>
       
