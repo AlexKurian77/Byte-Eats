@@ -42,6 +42,7 @@ interface Profile {
     targetweight: number;
     height: number;
     budget: string;
+    banned :Array<string>;
 }
 
 interface Recipe {
@@ -213,7 +214,7 @@ const DietPlanScreen = () => {
           - Target Weight: ${getSafeProfileValue(profile.targetweight)} kg
           - Height: ${getSafeProfileValue(profile.height)} cm
           - Budget Preference: ${getSafeProfileValue(profile.budget, 'moderate')}
-          - Dislikes: ${getSafeProfileValue(profile.banned?.[0], 'none')}
+          - Dislikes: ${getSafeProfileValue(profile.banned?.join(","), 'none')}
 
           Instructions:
           1. Create a plan covering 1 day
@@ -223,6 +224,7 @@ const DietPlanScreen = () => {
           5. Format each meal name clearly using Markdown bold: **Meal Name**. Example: **Grilled Chicken Salad**.
           6. Don't give any explanation paragraphs just information 
           7. Keep the response very short and concise
+          8. Keep it Indian
         `;
 
         try {
