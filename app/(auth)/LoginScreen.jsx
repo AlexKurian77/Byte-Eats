@@ -4,27 +4,24 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   // Handle login
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
       Alert.alert('Success', 'Logged in successfully!');
-      navigation.navigate('Main');
+      router.replace('/(tabs)/HomeScreen');
     } catch (error) {
       Alert.alert('Login Failed', error.message);
     }
   };
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false
-    });
-  }, [navigation]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor='#1a1a1a' />
@@ -65,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
         <MaterialCommunityIcons name="google" size={24} color="white" />
         <Text style={styles.googleButtonText}>Continue with Google</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={styles.signupContainer}>
+      <TouchableOpacity onPress={() => router.push('/(auth)/SignUp')} style={styles.signupContainer}>
         <Text style={styles.signupText}>Don't have an account? </Text>
         <Text style={styles.signupLink}>Sign up</Text>
       </TouchableOpacity>

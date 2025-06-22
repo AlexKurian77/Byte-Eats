@@ -1,18 +1,18 @@
-// navigation/AppNavigator.tsx
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from '../screens/LoginScreen';
-import HomeScreen from '../screens/HomeScreen';
-import DietPlanScreen from '../screens/PersonalizedDietPlanning';
+// // navigation/AppNavigator.tsx
+// import React from 'react';
+// import { createStackNavigator } from '@react-navigation/stack';
+// import LoginScreen from '../screens/LoginScreen';
+// import HomeScreen from '../screens/HomeScreen';
+// import DietPlanScreen from '../screens/PersonalizedDietPlanning';
 
-const Stack = createStackNavigator();
+// const Stack = createStackNavigator();
 
-const AppNavigator = () => {
-  return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="DietPlan" component={DietPlanScreen} />
-    </Stack.Navigator>
-  );
-};
+// const AppNavigator = () => {
+//   return (
+//     <Stack.Navigator initialRouteName="Login">
+//       <Stack.Screen name="DietPlan" component={DietPlanScreen} />
+//     </Stack.Navigator>
+//   );
+// };
 
-export default AppNavigator;
+// export default AppNavigator;

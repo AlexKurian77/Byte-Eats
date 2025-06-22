@@ -12,36 +12,37 @@ import { RootStackParamList } from '@/types';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { router } from 'expo-router';
 
 
 const features = [
   { 
     title: 'Personalized Diet Planning', 
-    screen: 'DietPlan',
+    screen: '/PersonalizedDietPlanning',
     icon: 'notebook-outline',
     description: 'Custom meal plans based on your preferences'
   },
   { 
     title: 'Smart Recipe Search', 
-    screen: 'RecipeRecommender',
+    screen: '/RecipeRecommenderScreen',
     icon: 'robot-outline',
     description: 'AI-powered recipe recommendations'
   },
   { 
     title: 'Smart Grocery Planner', 
-    screen: 'Pricing',
+    screen: '/PricingScreen',
     icon: 'cart-outline',
     description: 'Generate lists with price comparisons'
   },
   { 
     title: 'Smart Chatbot Assistant', 
-    screen: 'Chatbot',
+    screen: '/(tabs)/ChatBotScreen',
     icon: 'message-text-outline',
     description: 'Get instant help with your diet'
   },
   { 
     title: 'User Profile & Goals', 
-    screen: 'Profile',
+    screen: '/(tabs)/ProfileScreen',
     icon: 'account-outline',
     description: 'Manage your progress'
   },
@@ -54,7 +55,6 @@ const features = [
 ];
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,7 +76,7 @@ const HomeScreen = () => {
         {/* Meal & Nutrition Tracking Card */}
         <TouchableOpacity 
           style={styles.caloriesCard}
-          onPress={() => navigation.navigate('MacroTracker')}
+          onPress={() => router.push('MacroTrackerScreen')}
         >
           <View style={styles.cardHeader}>
             <Text style={styles.caloriesTitle}>Meal & Nutrition Tracking</Text>
@@ -114,7 +114,7 @@ const HomeScreen = () => {
             <TouchableOpacity
               key={idx}
               style={styles.featureCard}
-              onPress={() => navigation.navigate(feat.screen)}
+              onPress={() => router.push(feat.screen)}
             >
               <MaterialCommunityIcons 
                 name={feat.icon} 

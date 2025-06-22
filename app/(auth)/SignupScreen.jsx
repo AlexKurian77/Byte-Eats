@@ -14,12 +14,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { StatusBar } from "expo-status-bar";
 
-const SignUpScreen = ({ navigation }) => {
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, [navigation]);
+const SignUpScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -97,7 +92,7 @@ const SignUpScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate("Login")}
+        onPress={() => router.push("/(tabs)/HomeScreen")}
         style={styles.loginContainer}
       >
         <Text style={styles.loginText}>Already have an account? </Text>
