@@ -4,13 +4,14 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/types';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -58,6 +59,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="light" backgroundColor="#000" />
       <ScrollView>
         {/* Header Section */}
         <View style={styles.header}>

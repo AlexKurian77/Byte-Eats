@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, SafeAreaVie
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
-
+import { StatusBar } from 'expo-status-bar';
 
 const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -27,6 +27,7 @@ const LoginScreen = ({ navigation }: any) => {
   }, [navigation]);
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="light" backgroundColor='#1a1a1a' />
       <Image
           source={require('../../assets/images/BYTE-Eats-logo.png')}
           style={{ width: 200, height: 160, alignSelf: 'center', marginBottom: 20 }}

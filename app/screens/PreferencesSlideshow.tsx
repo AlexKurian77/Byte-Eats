@@ -18,7 +18,7 @@ const PreferenceForm = () => {
     weight: '',
     targetweight: '',
     dietarypreferences: '',
-    likesanddislikes: ['', '', ''],
+    likes: ['', '', ''],
     banned: ['', '', ''],
     activityLevel: '',
     goal: '',
@@ -29,7 +29,7 @@ const PreferenceForm = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleArrayChange = (field: 'likesanddislikes' | 'banned', index: number, value: string) => {
+  const handleArrayChange = (field: 'likes' | 'banned', index: number, value: string) => {
     const updatedArray = [...formData[field]];
     updatedArray[index] = value;
     setFormData(prev => ({ ...prev, [field]: updatedArray }));
@@ -116,8 +116,8 @@ const PreferenceForm = () => {
           placeholder={`Item ${i + 1}`}
           placeholderTextColor="white"
           style={styles.input}
-          value={formData.likesanddislikes[i]}
-          onChangeText={text => handleArrayChange('likesanddislikes', i, text)}
+          value={formData.likes[i]}
+          onChangeText={text => handleArrayChange('likes', i, text)}
         />
       ))}
     </View>,

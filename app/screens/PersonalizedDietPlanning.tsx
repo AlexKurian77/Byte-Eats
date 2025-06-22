@@ -43,6 +43,7 @@ interface Profile {
     height: number;
     budget: string;
     banned :Array<string>;
+    likes : Array<string>;
 }
 
 interface Recipe {
@@ -214,6 +215,7 @@ const DietPlanScreen = () => {
           - Target Weight: ${getSafeProfileValue(profile.targetweight)} kg
           - Height: ${getSafeProfileValue(profile.height)} cm
           - Budget Preference: ${getSafeProfileValue(profile.budget, 'moderate')}
+          - Likes: ${getSafeProfileValue(profile.likes,'not specified')}
           - Dislikes: ${getSafeProfileValue(profile.banned?.join(","), 'none')}
 
           Instructions:

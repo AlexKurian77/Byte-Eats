@@ -12,10 +12,9 @@ import {
   Platform,
   ActivityIndicator,
   TextStyle,
-  SafeAreaView,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 type Message = {
   text: string;
   from: 'user' | 'bot';
