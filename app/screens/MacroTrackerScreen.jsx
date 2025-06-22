@@ -3,10 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { PieChart } from 'react-native-chart-kit';
 
-type TabType = 'CALORIES' | 'NUTRIENTS' | 'MACROS';
 
 const MacroTrackerScreen = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('CALORIES');
+  const [activeTab, setActiveTab] = useState('CALORIES');
   const [selectedDate, setSelectedDate] = useState('Today');
 
   const nutritionData = {
@@ -192,7 +191,7 @@ const MacroTrackerScreen = () => {
       </View>
 
       <View style={styles.tabs}>
-        {(['CALORIES', 'NUTRIENTS', 'MACROS'] as TabType[]).map((tab) => (
+        {(['CALORIES', 'NUTRIENTS', 'MACROS']).map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}

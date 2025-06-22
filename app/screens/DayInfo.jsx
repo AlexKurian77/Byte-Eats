@@ -3,14 +3,8 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-interface DayInfoProps {
-  dayData: any; // Assuming dayData contains intake and activity data
-  selectedDate: Date;
-  onDeleteIntake: (item: any, day: Date) => void;
-  onDeleteActivity: (activity: any, day: Date) => void;
-}
 
-const DayInfo: React.FC<DayInfoProps> = ({ dayData, selectedDate, onDeleteIntake, onDeleteActivity }) => {
+const DayInfo = ({ dayData, selectedDate, onDeleteIntake, onDeleteActivity }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.dateText}>Selected Date: {selectedDate.toDateString()}</Text>
@@ -18,7 +12,7 @@ const DayInfo: React.FC<DayInfoProps> = ({ dayData, selectedDate, onDeleteIntake
       {/* Display intake data */}
       <View style={styles.section}>
         <Text style={styles.header}>Intake Items</Text>
-        {dayData?.intakes?.map((item: any) => (
+        {dayData?.intakes?.map((item) => (
           <View key={item.id} style={styles.item}>
             <Text>{item.name} - {item.quantity}</Text>
             <Button
@@ -32,7 +26,7 @@ const DayInfo: React.FC<DayInfoProps> = ({ dayData, selectedDate, onDeleteIntake
       {/* Display activities data */}
       <View style={styles.section}>
         <Text style={styles.header}>Activities</Text>
-        {dayData?.activities?.map((activity: any) => (
+        {dayData?.activities?.map((activity) => (
           <View key={activity.id} style={styles.item}>
             <Text>{activity.name} - {activity.duration}</Text>
             <Button

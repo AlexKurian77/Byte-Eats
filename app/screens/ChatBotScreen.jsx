@@ -15,15 +15,12 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-type Message = {
-  text: string;
-  from: 'user' | 'bot';
-};
+
 
 const GEMINI_API_KEY = Constants.expoConfig?.extra?.geminiApiKey;
 
 const ChatbotScreen = () => {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState([
     { text: 'Hey there! 👋 I\'m ByteBot, your personal nutrition assistant. How can I help you today?', from: 'bot' },
   ]);
   const [input, setInput] = useState('');
@@ -32,7 +29,7 @@ const ChatbotScreen = () => {
   const sendMessage = async () => {
     if (input.trim() === '') return;
 
-    const userMsg: Message = { text: input, from: 'user' };
+    const userMsg = { text: input, from: 'user' };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
@@ -52,7 +49,7 @@ const ChatbotScreen = () => {
       const data = await res.json();
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-      const botMsg: Message = {
+      const botMsg = {
         text: reply || 'I apologize, could you please rephrase your question?',
         from: 'bot',
       };
@@ -72,7 +69,7 @@ const ChatbotScreen = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: Message }) => (
+  const renderItem = ({ item }) => (
     <View style={[styles.bubble, item.from === 'user' ? styles.userBubble : styles.botBubble]}>
       {item.from === 'bot' ? (
         <Markdown style={markdownStyles}>{item.text}</Markdown>
@@ -228,7 +225,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const markdownStyles: { [key: string]: TextStyle } = {
+const markdownStyles = {
   body: {
     fontSize: 15,
     color: '#fff',

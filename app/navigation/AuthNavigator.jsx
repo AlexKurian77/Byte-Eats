@@ -16,7 +16,7 @@ import ChatbotScreen from '../screens/ChatBotScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PreferenceSlideshow from '../screens/PreferencesSlideshow';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => {
   return (

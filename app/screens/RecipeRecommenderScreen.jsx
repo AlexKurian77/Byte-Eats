@@ -33,9 +33,9 @@ const dietaryPreferences = [
 
 const RecipeRecommenderScreen = () => {
   const [input, setInput] = useState('');
-  const [recipes, setRecipes] = useState<string>('');
+  const [recipes, setRecipes] = useState('');
   const [loading, setLoading] = useState(false);
-  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
+  const [selectedPreferences, setSelectedPreferences] = useState([]);
 
   const fetchRecipes = async () => {
     if (!input.trim()) return;
@@ -86,7 +86,7 @@ const RecipeRecommenderScreen = () => {
     setLoading(false);
   };
 
-  const togglePreference = (preference: string) => {
+  const togglePreference = (preference) => {
     setSelectedPreferences(prev => 
       prev.includes(preference)
         ? prev.filter(p => p !== preference)
@@ -113,7 +113,7 @@ const RecipeRecommenderScreen = () => {
               onPress={() => togglePreference(pref.label)}
             >
               <MaterialCommunityIcons 
-                name={pref.icon as any} 
+                name={pref.icon} 
                 size={18} 
                 color={selectedPreferences.includes(pref.label) ? '#fff' : '#4caf50'} 
               />

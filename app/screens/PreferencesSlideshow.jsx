@@ -25,11 +25,11 @@ const PreferenceForm = () => {
     budget: '',
   });
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleArrayChange = (field: 'likes' | 'banned', index: number, value: string) => {
+  const handleArrayChange = (field, index, value) => {
     const updatedArray = [...formData[field]];
     updatedArray[index] = value;
     setFormData(prev => ({ ...prev, [field]: updatedArray }));
@@ -53,7 +53,7 @@ const PreferenceForm = () => {
 
       await setDoc(doc(FIRESTORE_DB, 'users', user.uid), formData);
       Alert.alert('Preferences saved successfully!');
-      navigation.navigate("Main" as never);
+      navigation.navigate("Main");
     } catch (err) {
       console.error('Error saving to Firestore:', err);
       Alert.alert('Error saving. Check your internet or Firestore rules.');

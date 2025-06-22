@@ -14,7 +14,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { StatusBar } from "expo-status-bar";
 
-const SignUpScreen = ({ navigation }: any) => {
+const SignUpScreen = ({ navigation }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -34,7 +34,7 @@ const SignUpScreen = ({ navigation }: any) => {
       await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
       Alert.alert("Success", "Account created successfully!");
       navigation.navigate("PreferenceSlidehow");
-    } catch (error: any) {
+    } catch (error) {
       Alert.alert("Sign Up Failed", error.message);
     }
   };

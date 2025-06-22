@@ -7,7 +7,7 @@ const GEMINI_API_KEY = Constants.expoConfig?.extra?.geminiApiKey || 'YOUR_API_KE
 
 const PricingScreen = () => {
   const [input, setInput] = useState('');
-  const [prices, setPrices] = useState<{ name: string; price: string; unit: string }[]>([]);
+  const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -22,9 +22,9 @@ const PricingScreen = () => {
     { name: 'Potatoes', price: '30', unit: 'kg' }
   ];
 
-  const calculatePrice = (item: string, qty: string) => {
+  const calculatePrice = (item, qty) => {
     const ingredient = commonIngredients.find(ing => ing.name === item) || 
-                      prices.find((ing: { name: string; price: string; unit: string }) => ing.name === item);
+                      prices.find(ing => ing.name === item);
     if (!ingredient || !qty) return;
     
     const basePrice = parseFloat(ingredient.price);
@@ -89,9 +89,9 @@ const PricingScreen = () => {
 
       const parsed = text
         .split('\n')
-        .map((line: string) => line.trim())
-        .filter((line: string) => /^\d+\./.test(line))
-        .map((line: string) => {
+        .map((line) => line.trim())
+        .filter((line) => /^\d+\./.test(line))
+        .map((line) => {
           const parts = line.split('-');
           const name = parts[0].replace(/^\d+\.\s*/, '').trim();
           
@@ -185,7 +185,7 @@ const PricingScreen = () => {
       {loading && <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 20 }} />}
 
       <ScrollView style={styles.scroll}>
-        {prices.map((item: { name: string; price: string; unit: string }, index: number) => (
+        {prices.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={[styles.card, selectedItem === item.name && styles.selectedCard]}

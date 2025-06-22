@@ -14,10 +14,10 @@ const FDC_KEY = Constants.expoConfig?.extra?.fdcKey || "YOUR_API_KEY";
 
 const NutritionAnalyzer = () => {
   const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [nutrients, setNutrients] = useState<any>(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [nutrients, setNutrients] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   const searchFood = async () => {
     if (!query.trim()) return;
@@ -45,7 +45,7 @@ const NutritionAnalyzer = () => {
     }
   };
 
-  const getFoodDetails = async (fdcId: number) => {
+  const getFoodDetails = async (fdcId) => {
     setLoading(true);
     setNutrients(null);
     setError(null);

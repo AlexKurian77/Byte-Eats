@@ -13,7 +13,6 @@ import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const features = [
   { 
@@ -55,7 +54,7 @@ const features = [
 ];
 
 const HomeScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+  const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -115,10 +114,10 @@ const HomeScreen = () => {
             <TouchableOpacity
               key={idx}
               style={styles.featureCard}
-              onPress={() => navigation.navigate(feat.screen as keyof RootStackParamList)}
+              onPress={() => navigation.navigate(feat.screen)}
             >
               <MaterialCommunityIcons 
-                name={feat.icon as any} 
+                name={feat.icon} 
                 size={24} 
                 color="#4caf50" 
               />

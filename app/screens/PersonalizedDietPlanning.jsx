@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
     View, Text, StyleSheet, ScrollView, ActivityIndicator,
-    TouchableOpacity, Image, Linking, Alert // Added Alert
+    TouchableOpacity, Image, Linking, Alert
 } from 'react-native';
 import axios from 'axios';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import Constants from 'expo-constants';
 import Markdown from 'react-native-markdown-display';
-import { Ionicons } from '@expo/vector-icons'; // For icons if needed, adjust library if different
+import { Ionicons } from '@expo/vector-icons';
 
 // --- Configuration ---
 const GEMINI_API_KEY = Constants.expoConfig?.extra?.geminiApiKey;
@@ -20,60 +20,19 @@ const NUTRITIONIX_API_KEY = '5c8bc56ba765a6991bdfde11b6168e5e';
 const NUTRITIONIX_SEARCH_URL = 'https://trackapi.nutritionix.com/v2/search/instant';
 const NUTRITIONIX_NUTRIENTS_URL = 'https://trackapi.nutritionix.com/v2/natural/nutrients';
 
-// --- Types ---
-interface NutritionixItem {
-    food_name: string;
-    serving_unit: string;
-    serving_qty: number;
-    nf_calories: number;
-    nf_protein: number;
-    nf_total_carbohydrate: number;
-    nf_total_fat: number;
-    photo: {
-        thumb: string;
-        highres: string;
-    };
-}
-
-interface Profile {
-    goal: string;
-    activityLevel: string;
-    weight: number;
-    targetweight: number;
-    height: number;
-    budget: string;
-    banned :Array<string>;
-    likes : Array<string>;
-}
-
-interface Recipe {
-    id: string;
-    title: string;
-    image: string;
-    calories: number;
-    ingredients: string[];
-    url: string;
-    nutrients: {
-        protein: number;
-        carbs: number;
-        fat: number;
-    };
-}
-
-// --- Helper Function ---
-const getSafeProfileValue = (value: any, defaultValue: string = '--'): string => 
+const getSafeProfileValue = (value, defaultValue) =>
     value?.toString() || defaultValue;
 
 const DietPlanScreen = () => {
-    const [profile, setProfile] = useState<Profile | null>(null);
-    const [output, setOutput] = useState<string>('');
-    const [isFetchingProfile, setIsFetchingProfile] = useState<boolean>(true);
-    const [isGeneratingPlan, setIsGeneratingPlan] = useState<boolean>(false);
-    const [mealRecipes, setMealRecipes] = useState<Recipe[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [profile, setProfile] = useState(null);
+    const [output, setOutput] = useState('');
+    const [isFetchingProfile, setIsFetchingProfile] = useState(true);
+    const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+    const [mealRecipes, setMealRecipes] = useState([]);
+    const [error, setError] = useState(null);
 
     const db = getFirestore();
-    const auth = getAuth(); // Use auth instance
+    const auth = getAuth();
 
     // --- Fetch User Profile ---
     useEffect(() => {
@@ -93,9 +52,8 @@ const DietPlanScreen = () => {
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    // Validate the data has required fields
                     if (data) {
-                        setProfile(data as Profile);
+                        setProfile(data);
                     } else {
                         setError('Profile data is incomplete');
                     }
@@ -112,10 +70,10 @@ const DietPlanScreen = () => {
         };
 
         fetchProfile();
-    }, [auth, db]); // Dependency array includes stable references
+    }, [auth, db]);
 
     // --- Fetch Recipe from Nutritionix ---
-    const getRecipeFromNutritionix = useCallback(async (mealName: string): Promise<Recipe | null> => {
+    const getRecipeFromNutritionix = useCallback(async (mealName) => {
         try {
             const searchResponse = await axios.get(NUTRITIONIX_SEARCH_URL, {
                 params: {
@@ -148,8 +106,8 @@ const DietPlanScreen = () => {
             );
 
             const foodData = nutrientsResponse.data.foods[0];
-            
-            const recipe: Recipe = {
+
+            const recipe = {
                 id: `${foodData.food_name}-${Date.now()}`,
                 title: foodData.food_name,
                 image: foodData.photo.highres || foodData.photo.thumb,
@@ -167,18 +125,18 @@ const DietPlanScreen = () => {
                     fat: foodData.nf_total_fat
                 }
             };
-            
+
             return recipe;
-        } catch (err: any) {
+        } catch (err) {
             console.error(`Nutritionix API error for "${mealName}":`, err.response?.data || err.message);
             return null;
         }
     }, []);
 
-    // --- Extract Meal Names (Keep it simple for now) ---
-    const extractMealNames = (text: string): string[] => {
+    // --- Extract Meal Names ---
+    const extractMealNames = (text) => {
         const regex = /\*\*(.*?)\*\*/g;
-        const meals = new Set<string>();
+        const meals = new Set();
         let match;
         while ((match = regex.exec(text)) !== null) {
             const cleanedName = match[1].trim();
@@ -192,20 +150,19 @@ const DietPlanScreen = () => {
     // --- Generate Diet Plan ---
     const handleGenerate = async () => {
         if (!profile || !profile.goal || !profile.activityLevel) {
-             Alert.alert("Profile Incomplete", "Please complete your profile (Goal, Activity Level) before generating a plan.");
+            Alert.alert("Profile Incomplete", "Please complete your profile (Goal, Activity Level) before generating a plan.");
             return;
         }
-         if (!GEMINI_API_KEY) {
-             Alert.alert("Configuration Error", "Unable to generate plan. API key is missing.");
-             return;
-         }
+        if (!GEMINI_API_KEY) {
+            Alert.alert("Configuration Error", "Unable to generate plan. API key is missing.");
+            return;
+        }
 
         setIsGeneratingPlan(true);
-        setMealRecipes([]); // Clear previous recipes
-        setOutput(''); // Clear previous output
-        setError(null); // Clear previous errors
+        setMealRecipes([]);
+        setOutput('');
+        setError(null);
 
-        // Construct the prompt including the budget
         const prompt = `
           You are a professional dietician designing personalized meal plans.
           Generate a detailed 7-day diet plan for a person with the following details:
@@ -230,12 +187,10 @@ const DietPlanScreen = () => {
         `;
 
         try {
-            console.log("Sending prompt to Gemini:", prompt); // Debugging
+            console.log("Sending prompt to Gemini:", prompt);
             const response = await axios.post(GEMINI_API_URL, {
                 contents: [{ parts: [{ text: prompt }] }],
-                // Add safety settings or generation config if needed
-                // generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
-            }, { timeout: 60000 }); // Added timeout
+            }, { timeout: 60000 });
 
             const result = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
 
@@ -245,22 +200,21 @@ const DietPlanScreen = () => {
             }
             setOutput(result);
 
-            // Extract meal names and fetch recipes
             const mealNames = extractMealNames(result);
             if (mealNames.length > 0) {
                 console.log(`Fetching ${mealNames.length} recipes from Nutritionix...`);
                 const recipePromises = mealNames.map(name => getRecipeFromNutritionix(name));
                 const fetchedRecipes = await Promise.all(recipePromises);
-                const validRecipes = fetchedRecipes.filter((recipe): recipe is Recipe => recipe !== null);
+                const validRecipes = fetchedRecipes.filter(recipe => recipe !== null);
                 console.log(`Successfully fetched ${validRecipes.length} recipes.`);
                 setMealRecipes(validRecipes);
             }
 
-        } catch (err: any) {
+        } catch (err) {
             console.error('Error generating diet plan or fetching recipes:', err);
-            const errorMessage = err.response?.data?.error?.message || 
-                               err.message || 
-                               'Something went wrong. Please try again.';
+            const errorMessage = err.response?.data?.error?.message ||
+                err.message ||
+                'Something went wrong. Please try again.';
             setOutput('');
             setError(errorMessage);
             Alert.alert("Generation Failed", errorMessage);
@@ -275,30 +229,26 @@ const DietPlanScreen = () => {
             <Text style={styles.infoText}>Goal: <Text style={styles.infoValue}>{getSafeProfileValue(profile?.goal)}</Text></Text>
             <Text style={styles.infoText}>Activity: <Text style={styles.infoValue}>{getSafeProfileValue(profile?.activityLevel)}</Text></Text>
             <Text style={styles.infoText}>Budget: <Text style={styles.infoValue}>{getSafeProfileValue(profile?.budget, 'Moderate')}</Text></Text>
-            {/* Optionally show more details */}
-             {/* <Text style={styles.infoText}>Weight: {getSafeProfileValue(profile?.weight)} kg</Text>
-            <Text style={styles.infoText}>Target: {getSafeProfileValue(profile?.targetweight)} kg</Text>
-            <Text style={styles.infoText}>Height: {getSafeProfileValue(profile?.height)} cm</Text> */}
         </View>
     );
 
-     const renderRecipeCard = (meal: Recipe, index: number) => (
-         <View key={meal.id || index} style={styles.recipeCard}>
+    const renderRecipeCard = (meal, index) => (
+        <View key={meal.id || index} style={styles.recipeCard}>
             <Text style={styles.recipeTitle}>{meal.title}</Text>
             {meal.image && <Image source={{ uri: meal.image }} style={styles.recipeImage} resizeMode="cover" />}
             <Text style={styles.recipeDetail}>Calories: {meal.calories} kcal</Text>
             <Text style={styles.recipeLabel}>Nutrition Facts:</Text>
-            {meal.ingredients.map((ingredient: string, i: number) => (
+            {meal.ingredients.map((ingredient, i) => (
                 <Text key={i} style={styles.ingredientItem}>• {ingredient}</Text>
             ))}
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.viewMoreButton}
                 onPress={() => Linking.openURL(meal.url)}
             >
                 <Text style={styles.viewMoreButtonText}>View More Details</Text>
             </TouchableOpacity>
-         </View>
-     );
+        </View>
+    );
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.scrollContentContainer}>
@@ -321,28 +271,23 @@ const DietPlanScreen = () => {
                     </TouchableOpacity>
                 </>
             ) : (
-                 // Only show error if not loading and no profile
                 !isFetchingProfile && error && <Text style={styles.errorText}>{error}</Text>
             )}
 
-             {/* Display Error Messages */}
-            {error && !isGeneratingPlan && !isFetchingProfile && ( // Show generation errors if not loading
-                 <View style={styles.errorContainer}>
-                     <Ionicons name="alert-circle-outline" size={20} color={styles.errorText.color} />
-                     <Text style={styles.errorText}>{error}</Text>
-                 </View>
-             )}
+            {error && !isGeneratingPlan && !isFetchingProfile && (
+                <View style={styles.errorContainer}>
+                    <Ionicons name="alert-circle-outline" size={20} color={styles.errorText.color} />
+                    <Text style={styles.errorText}>{error}</Text>
+                </View>
+            )}
 
-            {/* Display Generated Plan */}
-            {output && !isGeneratingPlan && ( // Render Markdown only when not generating
+            {output && !isGeneratingPlan && (
                 <View style={styles.outputContainer}>
                     <Text style={styles.sectionHeading}>Your 1-Day Plan</Text>
-                    {/* Apply specific styles for Markdown elements */}
                     <Markdown style={markdownStyles}>{output}</Markdown>
                 </View>
             )}
 
-            {/* Display Meal Recipe Details */}
             {mealRecipes.length > 0 && !isGeneratingPlan && (
                 <View style={styles.recipeSection}>
                     <Text style={styles.sectionHeading}>Recipe Ideas 🍲</Text>
@@ -354,12 +299,12 @@ const DietPlanScreen = () => {
 };
 
 // --- Styling ---
-const accentColor = '#4CAF50'; // Green accent from screenshot
+const accentColor = '#4CAF50';
 const primaryTextColor = '#FFFFFF';
-const secondaryTextColor = '#AEAEB2'; // Lighter grey for less emphasis
-const backgroundColor = '#000000'; // Black background like screenshot
-const cardBackgroundColor = '#1C1C1E'; // Dark grey for cards
-const errorColor = '#FF453A'; // iOS-style red for errors
+const secondaryTextColor = '#AEAEB2';
+const backgroundColor = '#000000';
+const cardBackgroundColor = '#1C1C1E';
+const errorColor = '#FF453A';
 
 const styles = StyleSheet.create({
     container: {
@@ -368,7 +313,7 @@ const styles = StyleSheet.create({
     },
     scrollContentContainer: {
         padding: 20,
-        paddingBottom: 40, // Ensure space at the bottom
+        paddingBottom: 40,
     },
     mainHeading: {
         fontSize: 26,
@@ -397,12 +342,12 @@ const styles = StyleSheet.create({
         backgroundColor: accentColor,
         paddingVertical: 14,
         paddingHorizontal: 20,
-        borderRadius: 25, // Rounded button
+        borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'row', // For loader
+        flexDirection: 'row',
         marginBottom: 25,
-        shadowColor: '#000', // Optional shadow
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
@@ -414,14 +359,14 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     buttonDisabled: {
-        backgroundColor: '#555', // Darker shade when disabled
+        backgroundColor: '#555',
         opacity: 0.7,
     },
     loader: {
         marginVertical: 30,
     },
     outputContainer: {
-        marginTop: 10, // Reduced top margin
+        marginTop: 10,
         padding: 15,
         backgroundColor: cardBackgroundColor,
         borderRadius: 12,
@@ -434,17 +379,17 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         paddingBottom: 5,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(76, 175, 80, 0.3)', // Faint green underline
+        borderBottomColor: 'rgba(76, 175, 80, 0.3)',
     },
     recipeSection: {
-         marginTop: 10, // Reduced top margin
+        marginTop: 10,
     },
     recipeCard: {
         backgroundColor: cardBackgroundColor,
         borderRadius: 12,
         padding: 15,
         marginBottom: 15,
-        shadowColor: '#000', // Subtle shadow for cards
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.2,
         shadowRadius: 2,
@@ -458,17 +403,17 @@ const styles = StyleSheet.create({
     },
     recipeImage: {
         width: '100%',
-        height: 180, // Slightly larger image
+        height: 180,
         borderRadius: 8,
         marginBottom: 10,
-        backgroundColor: '#333', // Placeholder bg color
+        backgroundColor: '#333',
     },
     recipeDetail: {
         fontSize: 14,
         color: secondaryTextColor,
         marginBottom: 5,
     },
-     recipeLabel: {
+    recipeLabel: {
         fontSize: 15,
         fontWeight: '600',
         color: primaryTextColor,
@@ -478,7 +423,7 @@ const styles = StyleSheet.create({
     ingredientItem: {
         fontSize: 14,
         color: secondaryTextColor,
-        marginLeft: 5, // Indent ingredients slightly
+        marginLeft: 5,
         lineHeight: 20,
     },
     viewMoreButton: {
@@ -498,30 +443,29 @@ const styles = StyleSheet.create({
     errorContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 69, 58, 0.15)', // Light red background
+        backgroundColor: 'rgba(255, 69, 58, 0.15)',
         borderRadius: 8,
         padding: 12,
         marginBottom: 20,
     },
     errorText: {
         fontSize: 15,
-        color: errorColor, // Red text color
-        marginLeft: 8, // Space icon from text
-        flex: 1, // Allow text to wrap
+        color: errorColor,
+        marginLeft: 8,
+        flex: 1,
     },
-    accentColor: { // Just to easily reference the color value in JS
+    accentColor: {
         color: accentColor,
     }
 });
 
-// Specific styles for the Markdown component to match the theme
 const markdownStyles = StyleSheet.create({
     body: {
         color: primaryTextColor,
         fontSize: 15,
         lineHeight: 23,
     },
-    heading1: { // Example: Day 1
+    heading1: {
         color: primaryTextColor,
         fontSize: 19,
         fontWeight: 'bold',
@@ -531,29 +475,29 @@ const markdownStyles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: 'rgba(255, 255, 255, 0.2)',
     },
-    heading2: { // Example: Breakfast, Lunch, Dinner
+    heading2: {
         color: primaryTextColor,
         fontSize: 17,
         fontWeight: '600',
         marginTop: 10,
         marginBottom: 5,
     },
-     heading3: { // Example: Meal Name (if Gemini uses ###)
+    heading3: {
         color: primaryTextColor,
         fontSize: 16,
-        fontWeight: 'bold', // Already bold via Markdown `**` but can reinforce
+        fontWeight: 'bold',
         marginBottom: 3,
     },
-    strong: { // For **Meal Name**
-        color: accentColor, // Highlight meal names in green
+    strong: {
+        color: accentColor,
         fontWeight: 'bold',
-        fontSize: 16, // Slightly larger for emphasis
+        fontSize: 16,
     },
     list_item: {
         color: secondaryTextColor,
         fontSize: 15,
         marginBottom: 5,
-        marginLeft: 5, // Indent list items
+        marginLeft: 5,
     },
     bullet_list: {
         marginTop: 5,
@@ -562,12 +506,10 @@ const markdownStyles = StyleSheet.create({
         color: accentColor,
         textDecorationLine: 'underline',
     },
-    // Add other styles as needed (e.g., paragraph, blockquote)
     paragraph: {
-        marginTop: 0, // Adjust spacing as needed
+        marginTop: 0,
         marginBottom: 10,
     },
 });
-
 
 export default DietPlanScreen;

@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { StatusBar } from 'expo-status-bar';
 
-const LoginScreen = ({ navigation }: any) => {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -15,8 +15,8 @@ const LoginScreen = ({ navigation }: any) => {
       await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
       Alert.alert('Success', 'Logged in successfully!');
       navigation.navigate('Main');
-    } catch (error: any) {
-      Alert.alert('Login Failed', error.message); // Show error message
+    } catch (error) {
+      Alert.alert('Login Failed', error.message);
     }
   };
 
@@ -65,7 +65,6 @@ const LoginScreen = ({ navigation }: any) => {
         <MaterialCommunityIcons name="google" size={24} color="white" />
         <Text style={styles.googleButtonText}>Continue with Google</Text>
       </TouchableOpacity>
-      
       <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={styles.signupContainer}>
         <Text style={styles.signupText}>Don't have an account? </Text>
         <Text style={styles.signupLink}>Sign up</Text>
