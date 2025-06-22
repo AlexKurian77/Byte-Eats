@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import Constants from "expo-constants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const FDC_KEY = Constants.expoConfig?.extra?.fdcKey || "YOUR_API_KEY";
 
@@ -65,67 +66,70 @@ const NutritionAnalyzer = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Nutrition Analyzer</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Nutrition Analyzer</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Enter a food item..."
-        placeholderTextColor="#aaa"
-        value={query}
-        onChangeText={setQuery}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter a food item..."
+          placeholderTextColor="#aaa"
+          value={query}
+          onChangeText={setQuery}
+        />
 
-      <TouchableOpacity style={styles.button} onPress={searchFood}>
-        <Text style={styles.buttonText}>Search</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={searchFood}>
+          <Text style={styles.buttonText}>Search</Text>
+        </TouchableOpacity>
 
-      {loading && <ActivityIndicator size="large" color="#10b981" />}
+        {loading && <ActivityIndicator size="large" color="#10b981" />}
 
-      {error && <Text style={styles.error}>{error}</Text>}
+        {error && <Text style={styles.error}>{error}</Text>}
 
-      {/* Search Results */}
-      {searchResults.length > 0 && !nutrients && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Select a food item:</Text>
-          {searchResults.slice(0, 5).map((item, index) => (
-            <TouchableOpacity
-              key={item.fdcId}
-              onPress={() => getFoodDetails(item.fdcId)}
-            >
-              <Text style={styles.resultItem}>
-                {item.description} {item.brandName ? `(${item.brandName})` : ""}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-
-      {/* Nutrient Details */}
-      {nutrients && Array.isArray(nutrients.foodNutrients) && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{nutrients.description}</Text>
-
-          {nutrients.foodNutrients
-            .filter((n) =>
-              [
-                "Energy",
-                "Protein",
-                "Total lipid (fat)",
-                "Carbohydrate, by difference",
-                "Sugars, total including NLEA",
-                "Fiber, total dietary",
-                "Sodium, Na",
-              ].includes(n.nutrientName)
-            )
-            .map((n) => (
-              <Text key={n.nutrientId} style={styles.nutrient}>
-                {n.nutrientName}: {n.value} {n.unitName}
-              </Text>
+        {/* Search Results */}
+        {searchResults.length > 0 && !nutrients && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Select a food item:</Text>
+            {searchResults.slice(0, 5).map((item, index) => (
+              <TouchableOpacity
+                key={item.fdcId}
+                onPress={() => getFoodDetails(item.fdcId)}
+              >
+                <Text style={styles.resultItem}>
+                  {item.description}{" "}
+                  {item.brandName ? `(${item.brandName})` : ""}
+                </Text>
+              </TouchableOpacity>
             ))}
-        </View>
-      )}
-    </ScrollView>
+          </View>
+        )}
+
+        {/* Nutrient Details */}
+        {nutrients && Array.isArray(nutrients.foodNutrients) && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{nutrients.description}</Text>
+
+            {nutrients.foodNutrients
+              .filter((n) =>
+                [
+                  "Energy",
+                  "Protein",
+                  "Total lipid (fat)",
+                  "Carbohydrate, by difference",
+                  "Sugars, total including NLEA",
+                  "Fiber, total dietary",
+                  "Sodium, Na",
+                ].includes(n.nutrientName)
+              )
+              .map((n) => (
+                <Text key={n.nutrientId} style={styles.nutrient}>
+                  {n.nutrientName}: {n.value} {n.unitName}
+                </Text>
+              ))}
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

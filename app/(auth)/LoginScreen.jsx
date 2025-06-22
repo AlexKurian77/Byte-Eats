@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, SafeAreaView, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -29,7 +30,7 @@ const LoginScreen = () => {
           source={require('../../assets/images/BYTE-Eats-logo.png')}
           style={{ width: 200, height: 160, alignSelf: 'center', marginBottom: 20 }}
       />
-      <Text style={styles.welcomeText}></Text>
+      <Text style={styles.welcomeText}>Welcome Back</Text>
       
       <TextInput
         style={styles.input}

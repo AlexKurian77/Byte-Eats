@@ -1,42 +1,76 @@
-// DayInfo.tsx
+import React from "react";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useDayContext } from "../context/DayContext";
 
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+const DayInfo = () => {
+  const {
+    selectedDate,
+    dayData,
+    onDeleteIntake,
+    onDeleteActivity,
+  } = useDayContext();
 
-
-const DayInfo = ({ dayData, selectedDate, onDeleteIntake, onDeleteActivity }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.dateText}>Selected Date: {selectedDate.toDateString()}</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.dateText}>
+            Selected Date: {new Date(selectedDate).toDateString()}
+          </Text>
 
-      {/* Display intake data */}
-      <View style={styles.section}>
-        <Text style={styles.header}>Intake Items</Text>
-        {dayData?.intakes?.map((item) => (
-          <View key={item.id} style={styles.item}>
-            <Text>{item.name} - {item.quantity}</Text>
-            <Button
-              title="Delete"
-              onPress={() => onDeleteIntake(item, selectedDate)}
-            />
+          {/* Intake Section */}
+          <View style={styles.section}>
+            <Text style={styles.header}>Intake Items</Text>
+            {dayData?.intakes?.length > 0 ? (
+              dayData.intakes.map((item) => (
+                <View key={item.id} style={styles.item}>
+                  <Text style={{ color: "#fff" }}>
+                    {item.name} - {item.quantity}
+                  </Text>
+                  {onDeleteIntake && (
+                    <Button
+                      title="Delete"
+                      onPress={() => onDeleteIntake(item, selectedDate)}
+                    />
+                  )}
+                </View>
+              ))
+            ) : (
+              <Text style={{ color: "#aaa" }}>No intake data</Text>
+            )}
           </View>
-        ))}
-      </View>
 
-      {/* Display activities data */}
-      <View style={styles.section}>
-        <Text style={styles.header}>Activities</Text>
-        {dayData?.activities?.map((activity) => (
-          <View key={activity.id} style={styles.item}>
-            <Text>{activity.name} - {activity.duration}</Text>
-            <Button
-              title="Delete"
-              onPress={() => onDeleteActivity(activity, selectedDate)}
-            />
+          {/* Activities Section */}
+          <View style={styles.section}>
+            <Text style={styles.header}>Activities</Text>
+            {dayData?.activities?.length > 0 ? (
+              dayData.activities.map((activity) => (
+                <View key={activity.id} style={styles.item}>
+                  <Text style={{ color: "#fff" }}>
+                    {activity.name} - {activity.duration}
+                  </Text>
+                  {onDeleteActivity && (
+                    <Button
+                      title="Delete"
+                      onPress={() => onDeleteActivity(activity, selectedDate)}
+                    />
+                  )}
+                </View>
+              ))
+            ) : (
+              <Text style={{ color: "#aaa" }}>No activity data</Text>
+            )}
           </View>
-        ))}
-      </View>
-    </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -46,19 +80,23 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 16,
   },
   section: {
     marginVertical: 10,
   },
   header: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
+    color: "#6C63FF",
   },
   item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
 });

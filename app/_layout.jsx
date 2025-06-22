@@ -1,9 +1,10 @@
 import { Stack } from "expo-router";
-import '../globals.css';
+import { DayProvider } from "./context/DayContext";
+import "../globals.css";
 
 export default function RootLayout() {
   return (
-    <>
+    <DayProvider>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -11,6 +12,6 @@ export default function RootLayout() {
         <Stack.Screen name="(screens)" options={{ headerShown: false }} />
         <Stack.Screen name="(profile)" options={{ headerShown: false }} />
       </Stack>
-    </>
+    </DayProvider>
   );
 }

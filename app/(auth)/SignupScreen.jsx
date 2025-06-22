@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 
 const SignUpScreen = () => {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ const SignUpScreen = () => {
     try {
       await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
       Alert.alert("Success", "Account created successfully!");
-      navigation.navigate("PreferenceSlidehow");
+      router.replace("/(screens)/PreferenceSlideshow");
     } catch (error) {
       Alert.alert("Sign Up Failed", error.message);
     }
