@@ -6,6 +6,7 @@ const _layout = () => {
     return (
         <Stack>
             <Stack.Screen name="DayInfo" options={{ headerShown: false }} />
+            <Stack.Screen name="AddDayInfo" options={{ headerShown: false }} />
             <Stack.Screen name="MacroTrackerScreen" options={{ headerShown: false }} />
             <Stack.Screen name="NutritionAnalyzer" options={{ headerShown: false }} />
             <Stack.Screen name="PersonalizedDietPlanning" options={{ headerShown: false }} />

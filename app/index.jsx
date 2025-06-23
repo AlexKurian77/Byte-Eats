@@ -8,7 +8,8 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = FIREBASE_AUTH.onAuthStateChanged((user) => {
       if (user) {
-        router.replace("/(tabs)/HomeScreen");
+        router.replace("/(auth)/LoginScreen");
+        // router.replace("/(tabs)/HomeScreen");
       } else {
         router.replace("/(auth)/LoginScreen");
       }

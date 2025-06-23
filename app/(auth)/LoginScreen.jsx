@@ -63,7 +63,7 @@ const LoginScreen = () => {
         <MaterialCommunityIcons name="google" size={24} color="white" />
         <Text style={styles.googleButtonText}>Continue with Google</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('/(auth)/SignUp')} style={styles.signupContainer}>
+      <TouchableOpacity onPress={() => router.push('/(auth)/SignupScreen')} style={styles.signupContainer}>
         <Text style={styles.signupText}>Don't have an account? </Text>
         <Text style={styles.signupLink}>Sign up</Text>
       </TouchableOpacity>

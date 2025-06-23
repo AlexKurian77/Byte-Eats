@@ -11,28 +11,57 @@ import moment from "moment";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Calendar } from "react-native-calendars";
 import { router } from "expo-router";
-import { useDayContext } from "../context/DayContext";
+import { doc, getDoc } from "firebase/firestore";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "../../firebaseConfig";
 
 const DiaryUI = () => {
-  const tom = new Date();
-  tom.setDate(tom.getDate() + 1);
-  const maxDate = tom.toISOString().split("T")[0];
-  const calories = { consumed: 62, goal: 3505 };
-  const macros = { carbs: "14/525g", fat: "0/97g", protein: "0/131g" };
+  const today = new Date();
+  const maxDate = today.toISOString().split("T")[0];
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [totalCalories, setTotalCalories] = useState(0);
+  const [macros, setMacros] = useState({
+    carbs: "0/525g",
+    fat: "0/97g",
+    protein: "0/131g",
+  });
 
-  const { selectedDate, setSelectedDate, setDayData } = useDayContext();
-  useEffect(() => {
-    if (!selectedDate) {
-      const today = moment().format("YYYY-MM-DD");
-      setSelectedDate(today);
+  const fetchMealCalories = async (date) => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) return;
+
+    try {
+      const mealRef = doc(FIRESTORE_DB, `users/${user.uid}/meals/${date}`);
+      const docSnap = await getDoc(mealRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        let total = 0;
+        for (const key in data) {
+          const mealArray = data[key];
+          mealArray.forEach((meal) => {
+            const cals = parseFloat(meal.calories);
+            total += isNaN(cals) ? 0 : cals;
+          });
+        }
+        setTotalCalories(total);
+      } else {
+        setTotalCalories(0);
+      }
+    } catch (err) {
+      console.log("Error fetching calories:", err);
     }
+  };
+
+  useEffect(() => {
+    const today = moment().format("YYYY-MM-DD");
+    if (!selectedDate) setSelectedDate(today);
+    else fetchMealCalories(today);
   }, []);
 
-  const handleNavigateToDayInfo = () => {
-    setSelectedDate(selectedDate);
-    setDayData({ example: "some data" });
-    router.push("/(screens)/DayInfo");
-  };
+  useEffect(() => {
+    if (selectedDate) {
+      fetchMealCalories(selectedDate);
+    }
+  }, [selectedDate]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#121212" }}>
@@ -76,7 +105,7 @@ const DiaryUI = () => {
             <View>
               <View style={styles.calorieBox}>
                 <Text style={styles.calorieText}>
-                  {calories.consumed}/{calories.goal} kcal
+                  {totalCalories}/{3505} kcal
                 </Text>
               </View>
               <Text style={styles.macroText}>
@@ -93,9 +122,10 @@ const DiaryUI = () => {
               style={styles.addButton}
               onPress={() =>
                 router.push({
-                  pathname: "/(screens)/DayInfo",
+                  pathname: "/(screens)/AddDayInfo",
                   params: {
-                    dayData: {},
+                    title: "Breakfast",
+                    fireTitle: "breakfast",
                     selectedDate: selectedDate,
                   },
                 })
@@ -108,7 +138,16 @@ const DiaryUI = () => {
             <Text style={styles.sectionTitle}>Lunch</Text>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => console.log("Add Lunch")}
+              onPress={() =>
+                router.push({
+                  pathname: "/(screens)/AddDayInfo",
+                  params: {
+                    title: "Lunch",
+                    fireTitle: "lunch",
+                    selectedDate: selectedDate,
+                  },
+                })
+              }
             >
               <Icon name="add-outline" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -117,7 +156,16 @@ const DiaryUI = () => {
             <Text style={styles.sectionTitle}>Dinner</Text>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => console.log("Add Dinner")}
+              onPress={() =>
+                router.push({
+                  pathname: "/(screens)/AddDayInfo",
+                  params: {
+                    title: "Dinner",
+                    fireTitle: "dinner",
+                    selectedDate: selectedDate,
+                  },
+                })
+              }
             >
               <Icon name="add-outline" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -126,7 +174,16 @@ const DiaryUI = () => {
             <Text style={styles.sectionTitle}>Snack</Text>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => console.log("Add Snack")}
+              onPress={() =>
+                router.push({
+                  pathname: "/(screens)/AddDayInfo",
+                  params: {
+                    title: "Snack",
+                    fireTitle: "snack",
+                    selectedDate: selectedDate,
+                  },
+                })
+              }
             >
               <Icon name="add-outline" size={24} color="#FFF" />
             </TouchableOpacity>
@@ -135,7 +192,16 @@ const DiaryUI = () => {
             <Text style={styles.sectionTitle}>Customized Meal</Text>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => console.log("Add Customized Meal")}
+              onPress={() =>
+                router.push({
+                  pathname: "/(screens)/AddDayInfo",
+                  params: {
+                    title: "Customized Meal",
+                    fireTitle: "customizedMeal",
+                    selectedDate: selectedDate,
+                  },
+                })
+              }
             >
               <Icon name="add-outline" size={24} color="#FFF" />
             </TouchableOpacity>

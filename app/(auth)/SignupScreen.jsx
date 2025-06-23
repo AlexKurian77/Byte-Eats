@@ -29,7 +29,7 @@ const SignUpScreen = () => {
     try {
       await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
       Alert.alert("Success", "Account created successfully!");
-      router.replace("/(screens)/PreferenceSlideshow");
+      router.replace("/(screens)/PreferencesSlideshow");
     } catch (error) {
       Alert.alert("Sign Up Failed", error.message);
     }

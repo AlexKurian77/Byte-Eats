@@ -16,6 +16,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { FIRESTORE_DB } from "../../firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
 const PreferenceForm = () => {
   const navigation = useNavigation();
@@ -64,7 +65,7 @@ const PreferenceForm = () => {
 
       await setDoc(doc(FIRESTORE_DB, "users", user.uid), formData);
       Alert.alert("Preferences saved successfully!");
-      navigation.navigate("Main");
+      router.replace("/(tabs)/HomeScreen");
     } catch (err) {
       console.error("Error saving to Firestore:", err);
       Alert.alert("Error saving. Check your internet or Firestore rules.");
