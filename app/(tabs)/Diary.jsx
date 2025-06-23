@@ -24,9 +24,11 @@ const DiaryUI = () => {
     fat: "0/97g",
     protein: "0/131g",
   });
+  const minDate = new Date(FIREBASE_AUTH.currentUser.metadata.creationTime).toISOString().split("T")[0]
 
   const fetchMealCalories = async (date) => {
     const user = FIREBASE_AUTH.currentUser;
+    
     if (!user) return;
 
     try {
@@ -71,7 +73,7 @@ const DiaryUI = () => {
           {selectedDate && (
             <Calendar
               current={selectedDate}
-              minDate={"2025-06-01"}
+              minDate={minDate}
               maxDate={maxDate}
               onDayPress={(day) => setSelectedDate(day.dateString)}
               markedDates={{
