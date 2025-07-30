@@ -60,7 +60,6 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#000" />
       <ScrollView>
-        {/* Header Section */}
         <View style={styles.header}>
           <View style={styles.profileIcon}>
             <MaterialCommunityIcons name="account" size={24} color="#4caf50" />
